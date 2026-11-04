@@ -1,5 +1,0 @@
-name: "muse_make_gijiroku_ai-output"
-title: "AIアウトプット雑談会 議事録メーカー"
-description: "Create short meeting minutes and a super-simple report for the AIアウトプット雑談会 from a transcript, then post the minutes with the supplied image to the AIアウトプット雑談会 thread (🧑‍💻サークル) and the text-only simple report to サークル開催報告 in #サークルリーダー交流, both in SHIFT AI's Discord after the user's OK."
-category: "Work and knowledge"
-include_in_prompt: false
