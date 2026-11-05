@@ -1,5 +1,0 @@
-name: "muse_up_youtube_from_google_drive_mp4"
-title: "Google Drive mp4 → YouTube Uploader"
-description: "Upload an mp4 stored in Google Drive to YouTube: fetch the file via the Drive connector, confirm the title, visibility and other required items with the user, then upload through YouTube Studio in Muse's built-in browser, where the user signs in themselves."
-category: "Work and knowledge"
-include_in_prompt: false
