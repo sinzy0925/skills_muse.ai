@@ -1,5 +1,0 @@
-name: "muse_make_editable_google_slides"
-title: "YouTube Video Slide Maker"
-description: "Create YouTube video slide materials (structure, slide text, narration, images and upload.json) from rough notes or a chat conversation log, then put the deck into Google Slides when asked."
-category: "Work and knowledge"
-include_in_prompt: false

@@ -24,7 +24,7 @@
 
 ## Confirm the parameters before building
 
-- Ask about every missing item among the format, the length, the image style and the checkpoint in one message before starting work.
+- Ask about every missing item among the format, the length, the image style, the image generation source and the checkpoint in one message before starting work.
 
 - Accept the manga format only when the user names it with words such as manga, flip style, panels or image only.
 
@@ -32,9 +32,11 @@
 
 - Offer the four checkpoints A to D from the templates file and record the chosen one instead of guessing it.
 
+- Offer two image generation sources and record the chosen one as the image source: Muse (the built-in image generation) or Gemini (through the built-in browser). When the user chooses Gemini, proceed to the Google sign-in step in the image generation section before any image work, because Gemini is used only while the built-in browser is signed in to Google.
+
 - Apply the Japanese language, a 16 to 9 frame, a casual and clear tone and a general beginner audience when the user leaves those open.
 
-- Record the format, the slide count, the image style, the checkpoint, the tone, the audience and a short slug in brief.md once the answers arrive.
+- Record the format, the slide count, the image style, the image source, the checkpoint, the tone, the audience and a short slug in brief.md once the answers arrive.
 
 - Use `muse.create_options` for the format and checkpoint choices in the main chat and keep any remaining questions in that same message as plain text.
 
@@ -98,7 +100,7 @@
 
 ## Generate the images
 
-- Generate the images with `media.generate_image`, set the output folder to the images folder inside the video folder, and name the files thumbnail.png, slide-01.png onward for presentation form or scene-01.png onward for manga form.
+- When the image source is Muse, generate the images with `media.generate_image`, set the output folder to the images folder inside the video folder, and name the files thumbnail.png, slide-01.png onward for presentation form or scene-01.png onward for manga form.
 
 - Skip generation for a slide already covered by a supplied image used as-is and point that slide entry in upload.json at the supplied file.
 
@@ -109,6 +111,14 @@
 - Put large title text only in the thumbnail image and keep text and speech bubbles out of body images unless the user asked for dialogue inside the images.
 
 - Write detailed image prompts into content.md and ask the user to generate the images when image generation is unavailable in the session.
+
+- When the image source is Gemini, generate the images with Gemini in the built-in browser instead of `media.generate_image`:
+
+  - Use Gemini only while the built-in browser is signed in to Google. Check the sign-in state first with a read-only open of https://myaccount.google.com/ and continue only when the account page shows a signed-in account.
+  - When the browser is not signed in, open the Google sign-in page in the built-in browser and have the user sign in themselves through the secure entry. Never ask the user to send a password or a sign-in code in chat. Verify the signed-in state on the account page before generating anything.
+  - When the user stops, declines or cannot complete the sign-in, do not generate with Gemini. Stop and ask whether to switch the image source to Muse or pause the build; never switch silently.
+  - Generate one image per new Gemini chat with the exact image prompt from content.md, download each generated image at full size, convert it to PNG when needed, and save it into the images folder under the same standard names as the Muse route.
+  - Inspect every downloaded image before packaging: the subject matches the prompt, the style stays consistent across the set, and the thumbnail title text is legible and spelled exactly as written. Regenerate an off-brief image once with the same prompt before reporting a problem.
 
 ## Package the deliverables
 
