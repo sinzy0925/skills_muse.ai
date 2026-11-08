@@ -1,0 +1,5 @@
+name: "muse_sns_daily_posting"
+title: "Daily SNS Posting Workflow"
+description: "Prepare, confirm and publish a daily Instagram reel or carousel plus a Threads text post from a stock of ready-made materials, with preview and explicit user approval before anything is published."
+category: "Work and knowledge"
+include_in_prompt: false

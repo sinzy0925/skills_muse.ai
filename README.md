@@ -30,6 +30,12 @@ https://github.com/sinzy0925/skills_muse.ai.git
 |---|---|
 | `muse_up_youtube_from_google_drive_mp4` | Googleドライブに置いたmp4を、設定を確認してからYouTubeへアップロードする |
 
+### SNS投稿
+
+| スキル | 内容 |
+|---|---|
+| `muse_sns_daily_posting` | 素材ストックからInstagram（リール／カルーセル）とThreadsの投稿を1日分準備し、最終確認と本人のOKの後だけ公開する |
+
 ### 議事録
 
 | スキル | 内容 |
