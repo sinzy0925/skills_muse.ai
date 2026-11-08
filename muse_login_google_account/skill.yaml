@@ -1,0 +1,5 @@
+name: "muse_login_google_account"
+title: "Google Account Login in the Built-in Browser"
+description: "Get Muse's built-in browser signed in to the Google account the user designates, with the human doing the sign-in themselves, then verify and report which account is signed in."
+category: "Work and knowledge"
+include_in_prompt: false

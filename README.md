@@ -36,6 +36,12 @@ https://github.com/sinzy0925/skills_muse.ai.git
 |---|---|
 | `muse_sns_daily_posting` | 素材ストックからInstagram（リール／カルーセル）とThreadsの投稿を1日分準備し、最終確認と本人のOKの後だけ公開する |
 
+### ログイン
+
+| スキル | 内容 |
+|---|---|
+| `muse_login_google_account` | 内蔵ブラウザでGoogleアカウントのログイン状態を確認し、未ログインなら本人がログインして、指定のアカウントで入れたことを確認する |
+
 ### 議事録
 
 | スキル | 内容 |
