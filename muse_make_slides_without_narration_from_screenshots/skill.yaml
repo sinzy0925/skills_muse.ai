@@ -1,0 +1,5 @@
+name: "muse_make_slides_without_narration_from_screenshots"
+title: "スクショからプレゼン資料作成（ノート無し）"
+description: "Turn a set of screenshots (in filename/timestamp order) plus the user's one-line brief into a finished presentation deck in Google Slides with NO speaker notes: the work to do on each page is written on the slide itself in large bold text, original images are pasted as-is, and privacy masks plus numbered click annotations are added as movable slide shapes on top."
+category: "Work and knowledge"
+include_in_prompt: false

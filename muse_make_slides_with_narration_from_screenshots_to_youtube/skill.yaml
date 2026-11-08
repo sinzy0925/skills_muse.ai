@@ -1,0 +1,5 @@
+name: "muse_make_slides_with_narration_from_screenshots_to_youtube"
+title: "スクショから手順スライド作成"
+description: "Turn a set of screenshots (in filename/timestamp order) plus the user's one-line brief into an editable Google Slides how-to deck: original images pasted as-is, privacy masks and numbered click annotations added as movable slide shapes on top, and per-slide narration of the work steps in the speaker notes for YouTube use."
+category: "Work and knowledge"
+include_in_prompt: false
