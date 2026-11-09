@@ -108,6 +108,8 @@
 
 - Keep one image style across every image and record a fixed character description in brief.md for a recurring manga character, then reuse that description in every prompt.
 
+- Write every image prompt so the result looks cool and stylish: sharp composition, strong confident subjects, clean modern color contrast and a polished, high-end finish. Keep that look as the standing default in every prompt unless the user asks for a different mood (cute, warm, funny and so on) for this package.
+
 - Put large title text only in the thumbnail image and keep text and speech bubbles out of body images unless the user asked for dialogue inside the images.
 
 - Write detailed image prompts into content.md and ask the user to generate the images when image generation is unavailable in the session.
