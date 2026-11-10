@@ -1,0 +1,5 @@
+name: "muse_medical_expenses_to_sheets"
+title: "Medical Expenses to Google Sheets Ledger"
+description: "Organize medical expense records for the Japanese medical expense deduction (医療費控除): read hospital and pharmacy receipts from a Google Drive inbox folder, record transport-to-hospital memos (train, bus, taxi) that need no receipts, dedupe, append rows to a yearly Google Sheets ledger with per-person and category totals, flag items needing confirmation, then move the processed files to a done folder."
+category: "Work and knowledge"
+include_in_prompt: false
