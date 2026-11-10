@@ -13,6 +13,8 @@ Organize receipts for a Japanese tax return （確定申告）: read the receipt
 
 - This skill ships with `使い方シート.md`, a plain-language explanation of how to use it, written for the operator and for anyone they hand the skill to.
 - Whenever anyone asks how to use this skill （使い方を教えて, how does this work, and similar), show them the usage sheet: present its full contents (paste the text or attach the file). Do not improvise a different explanation and do not shorten the sheet; the sheet is the single source for the explanation.
+- After showing the sheet, if the operator wants to start using the skill, do not stop at the explanation: proceed with the setup in the same conversation. Run the connection checks under "Connect first" (share a connect link and wait if either service is not connected), then resolve the two folders and the ledger by name, creating any that are missing.
+- When the setup is done, always tell the operator the three URLs they will actually use: the inbox folder （領収書整理_実行前）, the done folder （領収書整理_実行後）, and the ledger spreadsheet. Those URLs come from the operator's own environment at runtime; never write them into the skill. An explanation without the concrete URLs does not get the operator started, so this step is part of answering "how do I use it".
 
 ## Connect first
 
