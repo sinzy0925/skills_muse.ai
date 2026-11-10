@@ -31,7 +31,7 @@
 
 ## Confirm the parameters before building
 
-- Ask about every missing item among the format, the length, the image style, the image generation source and the checkpoint in one message before starting work.
+- Ask about every missing item among the format, the length, the image style, the image generation source and the checkpoint in one message before starting work. Ask all of these questions together at the start, never one at a time later, and write how to answer inside the question block: number the questions, show the choices or a one-line answer example for each, and state the default that applies when an item is left unanswered, so the user can reply in a single message.
 
 - Accept the manga format only when the user names it with words such as manga, flip style, panels or image only.
 
@@ -39,11 +39,13 @@
 
 - Offer the four checkpoints A to D from the templates file and record the chosen one instead of guessing it.
 
-- Offer two image generation sources and record the chosen one as the image source: Muse (the built-in image generation) or Gemini (through the built-in browser). When the user chooses Gemini, proceed to the Google sign-in step in the image generation section before any image work, because Gemini is used only while the built-in browser is signed in to Google.
+- Offer the image style as a choice from a fixed list instead of asking for free text: 1. cool and stylish (the standing default, recommended), 2. flat and clear, 3. photo-like, 4. warm hand-drawn, 5. minimal, 6. manga style. Record the chosen style in brief.md; when the user does not choose, use the cool and stylish default. Apply the chosen style to every image in the package, the thumbnail included.
 
 - Apply the Japanese language, a 16 to 9 frame, a casual and clear tone and a general beginner audience when the user leaves those open.
 
 - Record the format, the slide count, the image style, the image source, the checkpoint, the tone, the audience and a short slug in brief.md once the answers arrive.
+
+- Offer the two image generation sources inside the same opening question block and record the chosen one as the image source: Muse (the built-in image generation) or Gemini (through the built-in browser). When the user chooses Gemini, proceed to the Google sign-in step in the image generation section before any image work, because Gemini is used only while the built-in browser is signed in to Google.
 
 - Use `muse.create_options` for the format and checkpoint choices in the main chat and keep any remaining questions in that same message as plain text.
 
@@ -107,15 +109,17 @@
 
 ## Generate the images
 
+- Write every image prompt in English and submit it in English, whichever image source is used. Only the text that must appear inside an image (for example the thumbnail title) stays in the content's language, quoted inside the English prompt.
+
+- Generate the body images first. Do NOT generate the thumbnail in this phase: the thumbnail is made last, in the thumbnail phase after packaging, once the finished content and the body images can be reviewed as a whole.
+
 - When the image source is Muse, generate the images with `media.generate_image`, set the output folder to the images folder inside the video folder, and name the files thumbnail.png, slide-01.png onward for presentation form or scene-01.png onward for manga form.
 
 - Skip generation for a slide already covered by a supplied image used as-is and point that slide entry in upload.json at the supplied file.
 
-- Generate the thumbnail in the same batch as the body images and never leave it to a later round.
-
 - Keep one image style across every image and record a fixed character description in brief.md for a recurring manga character, then reuse that description in every prompt.
 
-- Write every image prompt so the result looks cool and stylish: sharp composition, strong confident subjects, clean modern color contrast and a polished, high-end finish. Keep that look as the standing default in every prompt unless the user asks for a different mood (cute, warm, funny and so on) for this package.
+- Apply the image style chosen at the parameter check to every prompt, in the style's English wording. The standing default is a cool and stylish look: sharp composition, strong confident subjects, clean modern color contrast and a polished, high-end finish. A style the user chose for this package always replaces the default for that package.
 
 - Put large title text only in the thumbnail image and keep text and speech bubbles out of body images unless the user asked for dialogue inside the images.
 
@@ -131,11 +135,18 @@
 
 ## Package the deliverables
 
-- Build upload.json at version 1 from content.md, narrations.md and the image paths, with the thumbnail as the first slide entry.
+- Build upload.json at version 1 from content.md, narrations.md and the image paths. Reserve the thumbnail as the first slide entry, pointing at images/thumbnail.png, even though the thumbnail image itself is generated afterwards in the thumbnail phase.
 
 - Write youtube-meta.md with three title ideas, a description, tag ideas and an audience note.
 
 - Write manual-steps.md with the delivery template from the references file.
+
+## Make the thumbnail last
+
+- Only after the content, the narration, the body images and the package drafts exist, design the thumbnail with the whole package in view: the final title wording, the strongest visual among the finished slides, and the hook of the opening narration. A thumbnail designed with the whole package in view is consistently stronger than one made first.
+- Write the thumbnail prompt in English (the in-image title text stays in the content's language) and apply the same chosen image style as the body images, so the thumbnail matches the deck.
+- Generate the thumbnail with the same image source as the body images and save it as images/thumbnail.png.
+- Afterwards, validate upload.json with `muse.exec` by parsing it and checking that every referenced image file exists, the thumbnail included, before calling the package complete.
 
 - Validate upload.json with `muse.exec` by parsing it and checking that every referenced image file exists before calling the package complete.
 

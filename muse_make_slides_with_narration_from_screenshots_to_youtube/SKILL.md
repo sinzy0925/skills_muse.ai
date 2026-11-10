@@ -20,12 +20,15 @@ First run: 2026-11-08, a Google-account creation guide from 8 PC screenshots (10
 
 ## Inputs (validate first)
 
+Ask for everything this skill needs in one batch at the start, never one question at a time later. Number the questions, show how to answer each one (choices or a one-line example), and state the default that applies when an item is left unanswered, so the user can reply in a single message. The batch covers:
+
 1. The screenshots, with a known order. Default order: filename timestamps ascending, when filenames carry them.
 2. A one-line brief from the user, three parts. If any part is missing, ask using exactly these prompts:
    - 何の写真か（試作品？ 完成品？ いただきもの？）
    - 目的は何か（宣伝したい／記録したい／感謝を伝えたい）
    - 誰・どこなのか、強調したい点は何か
 3. Whether real names / email addresses / other personal information visible in the screenshots should be masked. Default: mask them; confirm with the user when unsure what counts.
+4. If any image is to be generated (for example a cover visual), the image style from the fixed list in "Image generation rules" below; the default is cool and stylish.
 
 If the brief is missing, STOP and ask before building anything. A one-line brief dramatically improves captions and narration; do not guess the purpose.
 
@@ -67,9 +70,19 @@ Never ship a mask you have not visually verified on the preview.
 
 Build with python-pptx, upload the .pptx to Google Drive with conversion to Google Slides (mimeType application/vnd.google-apps.presentation).
 
-### Step 4: Verify and report
+### Step 4: Cover and thumbnail, last
+
+Design the cover (title slide) finish and any generated cover or thumbnail image only after every step slide and the summary slide are built. Review the finished deck as a whole, pick its strongest visual, and match the deck's final title wording. A cover or thumbnail designed with the whole deck in view is consistently stronger than one made first. Follow the image generation rules below for any generated image.
+
+### Step 5: Verify and report
 
 Read the presentation back and check: slide count, one image per step slide, overlay shapes present (element counts), speaker notes present on all slides. Report the Slides URL and what was masked/annotated.
+
+## Image generation rules
+
+- These rules apply only when an image is generated (for example a cover visual or a thumbnail). The screenshots themselves are never regenerated or edited.
+- Write every image prompt in English and submit it in English. Only the text that must appear inside an image stays in the content's language, quoted inside the English prompt.
+- Offer the image style as a choice from a fixed list: 1. cool and stylish (the standing default, recommended), 2. flat and clear, 3. photo-like, 4. warm hand-drawn, 5. minimal. When the user does not choose, use the cool and stylish default.
 
 ### Revisions
 

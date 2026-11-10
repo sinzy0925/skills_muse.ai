@@ -173,7 +173,7 @@ Keep one tone throughout. Write spoken language rather than a reading of the sli
 
 ## upload.json
 
-Schema version 1. The thumbnail entry comes first in every file, created at package time and never appended later.
+Schema version 1. The thumbnail entry comes first in every file. The entry is reserved when the package is built, and the thumbnail image itself is generated last, after the whole package can be reviewed (see the thumbnail phase in SKILL.md); validation of image existence runs after that generation.
 
 ### Presentation form
 
@@ -244,6 +244,8 @@ Field rules:
 
 ## Image prompts
 
+Write every image prompt in English and submit it in English. Only the text that must appear inside an image (for example the thumbnail title) stays in the content's language, quoted inside the English prompt. Apply the image style chosen at the parameter check (fixed list in SKILL.md; cool and stylish is the standing default) in the style's English wording in every prompt.
+
 ### Presentation support image
 
 ```text
@@ -267,4 +269,4 @@ Consistent character design across scenes.
 
 ### Thumbnail
 
-Use the same style family as the body images, add the video title as large text inside the image, and favour a composition with contrast and clear empty space that stops the eye in a feed.
+Use the same style family as the body images, add the video title as large text inside the image, and favour a composition with contrast and clear empty space that stops the eye in a feed. Design and generate the thumbnail last, after the whole package (content, narration, body images) is finished and can be reviewed as a whole; pick the strongest visual motif from the finished slides.
