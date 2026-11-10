@@ -1,0 +1,5 @@
+name: "muse_receipt_pdf_to_sheets"
+title: "Receipt PDFs to Google Sheets Ledger"
+description: "Organize receipt PDFs and images from a Google Drive inbox folder into a Google Sheets expense ledger for Japanese tax filing: read each receipt (printed or handwritten), dedupe, append rows in a fixed 15-column format with tax-rate and invoice fields, report items needing confirmation, then move the processed files to a done folder."
+category: "Work and knowledge"
+include_in_prompt: false
