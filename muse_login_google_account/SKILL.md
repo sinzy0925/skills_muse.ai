@@ -7,6 +7,13 @@ Get Muse's built-in browser signed in to a Google account, so that other work (G
 - The target account is designated by the user at run time. Never write a specific account name, email address or password into this skill.
 - Signing in to an existing account is in scope. Creating a new Google account is out of scope: Google may block account creation from this browser, and creation needs the human's own device and phone.
 
+## Usage sheet (show it when asked)
+
+- This skill ships with `使い方シート.md`, a plain-language explanation of how to use it, written for the operator and for anyone they hand the skill to.
+- Whenever anyone asks how to use or explain this skill （使い方を教えて, 説明して, how does this work, and similar), start with the one-line summary from the top of the usage sheet (what the skill does, in one sentence), then ask which of the two they want. Never ask A or B before that summary: the listener cannot choose before knowing what the skill is. Cloning this repository and registering the skill are prerequisites shared by every skill in the collection, so do not explain them here. Many people only want to hear the explanation and will never run the skill, so never push a setup or a run on someone who only asked a question:
+  - **A — explanation only:** Show the usage sheet as-is (paste its full contents or attach the file). Do not improvise a different explanation and do not shorten the sheet; the sheet is the single source for the explanation. Do not open the browser or check anything.
+  - **B — actually use it:** Tell them 「内蔵ブラウザでログイン状態を確認してから説明します」, then check the sign-in state in the built-in browser against the account the operator designates, hand the browser over for sign-in when needed, verify the displayed account after they finish, and only then explain, using the sheet.
+
 ## Hard rules
 
 - Never ask the user to send a password, verification code or recovery code in chat, and never type one yourself. The human enters every credential and code directly into the browser.

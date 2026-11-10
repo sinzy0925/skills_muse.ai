@@ -10,6 +10,13 @@ Turn the user's screenshots of a procedure into a **finished presentation deck**
 
 Sibling skill: `muse_make_slides_with_narration_from_screenshots_to_youtube` is the YouTube version (speaker notes carry the narration). Use THIS skill when the user asks for プレゼン資料, ノート無し, or large on-slide text instead of narration.
 
+## Usage sheet (show it when asked)
+
+- This skill ships with `使い方シート.md`, a plain-language explanation of how to use it, written for the operator and for anyone they hand the skill to.
+- Whenever anyone asks how to use or explain this skill （使い方を教えて, 説明して, how does this work, and similar), start with the one-line summary from the top of the usage sheet (what the skill does, in one sentence), then ask which of the two they want. Never ask A or B before that summary: the listener cannot choose before knowing what the skill is. Cloning this repository and registering the skill are prerequisites shared by every skill in the collection, so do not explain them here. Many people only want to hear the explanation and will never run the skill, so never push a setup or a run on someone who only asked a question:
+  - **A — explanation only:** Show the usage sheet as-is (paste its full contents or attach the file). Do not improvise a different explanation and do not shorten the sheet; the sheet is the single source for the explanation. Do not run any connection check or setup.
+  - **B — actually use it:** Tell them 「接続を確認してから説明します」, then run the Google Drive and Google Slides connection checks (share a connect link and wait if a service is not connected), and explain using the sheet while collecting the screenshots or video and the one-line brief.
+
 First run: 2026-11-08, a Chrome-profile guide (7 screenshots → 9 slides) built as the presentation counterpart of the narration deck made the same morning.
 
 ## Inputs (validate first)

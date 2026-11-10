@@ -13,6 +13,13 @@ Typical instruction from the user:
 > 1. SHIFT AIの🧑‍💻サークルにある『AIアウトプット雑談会』に新議事録と画像を投稿して
 > 2. SHIFT AIの＃サークルリーダー交流にある『サークル開催報告』に超簡単議事録を文章のみ投稿して
 
+## Usage sheet (show it when asked)
+
+- This skill ships with `使い方シート.md`, a plain-language explanation of how to use it, written for the operator and for anyone they hand the skill to.
+- Whenever anyone asks how to use or explain this skill （使い方を教えて, 説明して, how does this work, and similar), start with the one-line summary from the top of the usage sheet (what the skill does, in one sentence), then ask which of the two they want. Never ask A or B before that summary: the listener cannot choose before knowing what the skill is. Cloning this repository and registering the skill are prerequisites shared by every skill in the collection, so do not explain them here. Many people only want to hear the explanation and will never run the skill, so never push a setup or a run on someone who only asked a question:
+  - **A — explanation only:** Show the usage sheet as-is (paste its full contents or attach the file). Do not improvise a different explanation and do not shorten the sheet; the sheet is the single source for the explanation. Do not draft or post anything.
+  - **B — actually use it:** Collect the four required inputs (today's date, next session's date, participant count, first-timer count) plus the transcript and the image, then explain using the sheet as the drafts are prepared. Without the four inputs, stop and ask for the missing ones, exactly as Step 1 requires.
+
 ## Posting targets
 
 Both are in the server SHIFT AI オンラインコミュニティ, posted via Muse's built-in browser with the user already signed in to Discord as themselves (display name タロ.AI). The login is done by the human in advance; never ask for the password or any code in chat.
