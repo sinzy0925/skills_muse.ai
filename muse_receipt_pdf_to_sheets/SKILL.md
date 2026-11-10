@@ -9,6 +9,11 @@ Organize receipts for a Japanese tax return （確定申告）: read the receipt
 - Ledger spreadsheet, found by title from the operator's records (for example `領収書整理<year>`). Create it with the format below on first use.
 - Use the Google Workspace CLI (`/opt/hatch/bin/hatch_gws_cli`) for both Drive and Sheets. Read the google_drive and google_sheets connector docs for exact commands.
 
+## Usage sheet (show it when asked)
+
+- This skill ships with `使い方シート.md`, a plain-language explanation of how to use it, written for the operator and for anyone they hand the skill to.
+- Whenever anyone asks how to use this skill （使い方を教えて, how does this work, and similar), show them the usage sheet: present its full contents (paste the text or attach the file). Do not improvise a different explanation and do not shorten the sheet; the sheet is the single source for the explanation.
+
 ## Connect first
 
 - Check Google Drive: `hatch_gws_cli drive status`. If it is `not_connected`, share the returned connect link as `[Connect Google Drive](<connect_url>)` and wait for the operator to connect before continuing.
