@@ -1,0 +1,5 @@
+name: "muse_check_resident_tax_simulation"
+title: "住民税非課税シミュレーター結果チェッカー"
+description: "Check a pasted result from the resident-tax exemption simulator Space: restate the inputs and verdict, independently recompute the key figures, run a missed-item checklist (spouse and household verdict, other income, public-pension additions, disability-certificate status, district class), verify the latest pension and tax information on the web with sources, and report the details. The skill never modifies the simulator and never files anything."
+category: "Work and knowledge"
+include_in_prompt: false
