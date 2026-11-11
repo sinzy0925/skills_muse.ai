@@ -242,11 +242,12 @@
       }
       .codebox{
         background:var(--code-bg);border-radius:12px;padding:12px 12px 12px 14px;
-        display:flex;align-items:center;gap:10px;margin-bottom:12px;
+        display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;
       }
       .codebox code{
         font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
         color:var(--code-ink);font-size:13.5px;line-height:1.55;overflow-wrap:anywhere;flex:1;
+        white-space:pre-wrap;
       }
       .copy-btn{
         flex:none;appearance:none;cursor:pointer;font:inherit;font-weight:700;font-size:13px;
@@ -723,6 +724,19 @@
         }
       ];
 
+      // 実行パネル用の穴埋め式テンプレート（ログインと住民税チェックは対象外）
+      var TEMPLATES = {
+        "muse_make_slides_with_narration_from_texts_to_youtube": "[ここに文章を記述してください]\n上記文章から以下のスキルを実行して\nmuse_make_slides_with_narration_from_texts_to_youtube",
+        "muse_make_slides_with_narration_from_screenshots_to_youtube": "小さなファイルは、そのままmuse.aiのチャットに貼り付ける\n\n大きなファイルや動画は、Googleドライブに置いてから、そのアドレスを以下に貼り付ける\n[Googleドライブのアドレス]\n上記文章から以下のスキルを実行して\nmuse_make_slides_with_narration_from_screenshots_to_youtube",
+        "muse_make_slides_without_narration_from_screenshots": "小さなファイルは、そのままmuse.aiのチャットに貼り付ける\n\n大きなファイルや動画は、Googleドライブに置いてから、そのアドレスを以下に貼り付ける\n[Googleドライブのアドレス]\n上記文章から以下のスキルを実行して\nmuse_make_slides_without_narration_from_screenshots",
+        "muse_up_youtube_from_google_drive_mp4": "Googleドライブに置いたmp4のアドレス（またはファイル名）を以下に貼り付ける\n[Googleドライブのアドレス]\n上記から以下のスキルを実行して\nmuse_up_youtube_from_google_drive_mp4",
+        "muse_sns_daily_posting": "以下のスキルを実行して\nmuse_sns_daily_posting",
+        "muse_make_gijiroku_ai-output": "画像は、そのままmuse.aiのチャットに貼り付ける\n[ここに議事録の元になる文章（文字起こし）を記述してください]\n上記文章から以下のスキルを実行して\nmuse_make_gijiroku_ai-output",
+        "muse_announcement_ai_output_to_discord": "以下のスキルを実行して\nmuse_announcement_ai_output_to_discord",
+        "muse_receipt_pdf_to_sheets": "「領収書整理_実行前」フォルダに領収書を入れたので、以下のスキルを実行して\nmuse_receipt_pdf_to_sheets",
+        "muse_medical_expenses_to_sheets": "「医療費整理_実行前」フォルダに領収書を入れたので、以下のスキルを実行して\nmuse_medical_expenses_to_sheets\n\n通院交通費のメモがあれば、以下に書いてください\n[例：11月12日、○○病院、電車で○○駅→○○駅、往復○○円]"
+      };
+
       var sectionsEl = document.getElementById("sections");
       var chipsEl = document.getElementById("chips");
 
@@ -795,6 +809,15 @@
                 ? '<div class="panel panel-run"><h3>呼び出し方</h3>'
                   + '<p class="simple-p">' + esc(s.runGuide) + '</p>'
                   + '</div>'
+                : TEMPLATES[s.name]
+                ? '<div class="panel panel-run"><h3>実行用のテンプレート</h3>'
+                  + '<div class="codebox"><code>' + esc(TEMPLATES[s.name]) + '</code>'
+                  + '<button type="button" class="copy-btn" data-copycode="1">' + copySvg + 'コピー</button></div>'
+                  + '<h3>最初に必要なもの・チェック項目</h3><ul class="need-list">'
+                  + s.needs.map(function(n){ return "<li>" + n + "</li>"; }).join("")
+                  + '</ul>'
+                  + '<p class="after-note">コピーして<b>チャットに貼り、[ ]の部分を書き換えてから</b>送ってください。</p>'
+                  + '</div>'
                 : '<div class="panel panel-run"><h3>実行用の指示文</h3>'
                   + '<div class="codebox"><code>' + esc(cmd) + '</code>'
                   + '<button type="button" class="copy-btn" data-cmd="' + esc(cmd) + '">' + copySvg + 'コピー</button></div>'
@@ -850,6 +873,11 @@
       }
       function copyCommand(btn){
         var text = btn.getAttribute("data-cmd");
+        if(!text){
+          var box = btn.closest(".codebox");
+          var codeEl = box ? box.querySelector("code") : null;
+          text = codeEl ? codeEl.textContent : "";
+        }
         function done(){
           btn.classList.add("done");
           var old = btn.innerHTML;
