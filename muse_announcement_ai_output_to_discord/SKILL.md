@@ -54,9 +54,9 @@ The draft must include:
 
 1. The event name 「AIアウトプット雑談会」 and an opening hook in the example's cheerful style.
 2. The date from Step 1, in the form 「M月D日（土）朝8時から開催です」.
-3. A seasonal greeting that fits the month and season, newly written.
+3. A **short** seasonal greeting, newly written by you each time to fit the month and season: about 3 lines, in the example's shape (a seasonal line, a line about AI moving fast, and an invitation to chat over coffee). Keep it brief.
 4. The fixed participation block, verbatim.
-5. A short introduction of what the gathering is, covering the example's points in fresh wording: every Saturday at 8:00; for people learning AI who struggle to keep motivation, face too many tools to choose from, or don't know where to start with output; small breakout rooms where you can talk lightly and find hints and new perspectives; any form of output is OK （インスタ、X、YouTube、文章、画像、仕事の工夫）; a welcoming close.
+5. A short introduction of what the gathering is, headed 「💖改めてご紹介」, covering the example's points in fresh wording: every Saturday at 8:00; then 「AIを学んでいて、こんなモヤモヤはありませんか？」 followed by these five worries, each as one short quoted line — 「続けたいのにモチベーションが保てない」「AIツールが多すぎて、どれを使えばいいか迷う」「アウトプットしたいけど、何から始めたらいいか分からない」「勉強ばかりしても、すぐに忘れるから、アウトプットして記憶にとどめたい」「最新のツールに興味がある。具体的に聞いてみたい事がある」; then small breakout rooms where you can talk lightly and find hints and new perspectives; any form of output is OK （インスタ、X、YouTube、文章、画像、仕事の工夫）; a welcoming close.
 
 Keep the whole text friendly, in the example's spirit (light emoji use is fine), and about the same length as the example — it must stay well under Discord's 2,000-character limit so it posts as one message. Do not invent facts or claims that are not in the example: no invented session topics, guests, or campaigns.
 
