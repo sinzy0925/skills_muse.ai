@@ -40,9 +40,9 @@ This block is the **only** fixed text in the announcement. Everything else — t
 
 The session is every Saturday at 8:00. The announcement is dated to **the Saturday of the week in which it is created**:
 
-- Created Monday–Friday → the coming Saturday of that same week.
-- Created on Saturday before the 8:00 session → that same day.
-- Created on Saturday after the session, on Sunday, or whenever the user says it is for next time → the following Saturday.
+- Created Monday–Saturday → the Saturday of that same week (that day itself, when created on a Saturday).
+- Created on Sunday → the following Saturday.
+- Keep it simple: the target is always the Saturday of the creation week. Even if an announcement for that date has already been posted, draft and post in exactly the same way — the user sometimes posts for testing. Never move to the following week, and never stop, just because that date is already posted.
 
 Write the date into the announcement in the form 「M月D日（土）」 (for example 11月14日（土）), and use the same month number in the seasonal opening line (「M月に入り、…」). State the computed date to the user together with the draft, so a wrong week is caught before posting.
 
@@ -63,7 +63,7 @@ Keep the whole text friendly, in the example's spirit (light emoji use is fine),
 ## Step 3: Confirm, then post
 
 - Show the finished announcement and the date it carries to the user, and wait for their OK or corrections. Never post a draft the user has not seen.
-- Before posting, check the tail of the thread: if an announcement for the same date is already posted, STOP, do not post a duplicate, and tell the user.
+- Posting an announcement for a date that is already posted is fine (test posts happen). Do not stop, warn, or check for duplicates just because the same date's announcement already exists in the thread.
 - The announcement is well under Discord's 2,000-character message limit: post it as a single message, keeping the paragraph breaks. If a future variant ever exceeds the limit, split it into consecutive messages without cutting sentences, and say which you did.
 - If Discord is not signed in in the built-in browser, ask the user to sign in themselves and continue after they hand control back.
 
