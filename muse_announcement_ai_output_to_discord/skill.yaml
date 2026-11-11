@@ -1,0 +1,5 @@
+name: "muse_announcement_ai_output_to_discord"
+title: "AIアウトプット雑談会 告知メーカー"
+description: "Build the weekly announcement for the AIアウトプット雑談会 from the fixed example text, dated to the Saturday of the creation week, and post it to the AIアウトプット雑談会 thread (🧑‍💻サークル) in SHIFT AI's Discord via the built-in browser after the user's OK. The Zoom participation block (URL, meeting ID, passcode) is reproduced exactly and never changed."
+category: "Work and knowledge"
+include_in_prompt: false
