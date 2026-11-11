@@ -691,7 +691,8 @@
           cat:"tax", no:"11",
           name:"muse_check_resident_tax_simulation",
           desc:"住民税非課税シミュレーターの判定結果をチャットに貼ると、検算・見落としチェック・年金関係の最新情報の確認までして、詳しく説明してくれるスキル",
-          start:"スペース<b>「住民税非課税シミュレーター」</b>で判定し、<b>「結果をコピー（AI確認用）」ボタン</b>の文章をチャットに貼って送ります。",
+          start:"住民税非課税シミュレーター（サイドバーのスペース）で判定し、結果の下の『結果をコピー（AI確認用）』ボタンの文章を、そのままチャットに貼って送る",
+          runGuide:"このスキルはランチャーからは実行しません。住民税非課税シミュレーターから呼び出します。シミュレーターで判定→『結果をコピー（AI確認用）』→チャットに貼る、の順で使ってください",
           detail:[
             { h:"聞き方に合わせて、説明のしかたが変わります", items:[
               "<b>使い方だけ知りたい場合</b>：このシートで説明します（確認や検索は行いません）。",
@@ -790,14 +791,18 @@
                 }).join("")
             +   '</div>'
             + '</div>'
-            + '<div class="panel panel-run"><h3>実行用の指示文</h3>'
-            +   '<div class="codebox"><code>' + esc(cmd) + '</code>'
-            +   '<button type="button" class="copy-btn" data-cmd="' + esc(cmd) + '">' + copySvg + 'コピー</button></div>'
-            +   '<h3>最初に必要なもの・チェック項目</h3><ul class="need-list">'
-            +   s.needs.map(function(n){ return "<li>" + n + "</li>"; }).join("")
-            +   '</ul>'
-            +   '<p class="after-note">コピーしたら<b>チャットの入力欄に貼って送信</b>してください。必要なものは、そのときに一緒に送っても、開始後の質問に答えても大丈夫です。</p>'
-            + '</div>'
+            + (s.runGuide
+                ? '<div class="panel panel-run"><h3>呼び出し方</h3>'
+                  + '<p class="simple-p">' + esc(s.runGuide) + '</p>'
+                  + '</div>'
+                : '<div class="panel panel-run"><h3>実行用の指示文</h3>'
+                  + '<div class="codebox"><code>' + esc(cmd) + '</code>'
+                  + '<button type="button" class="copy-btn" data-cmd="' + esc(cmd) + '">' + copySvg + 'コピー</button></div>'
+                  + '<h3>最初に必要なもの・チェック項目</h3><ul class="need-list">'
+                  + s.needs.map(function(n){ return "<li>" + n + "</li>"; }).join("")
+                  + '</ul>'
+                  + '<p class="after-note">コピーしたら<b>チャットの入力欄に貼って送信</b>してください。必要なものは、そのときに一緒に送っても、開始後の質問に答えても大丈夫です。</p>'
+                  + '</div>')
             + '</article>';
         });
 
