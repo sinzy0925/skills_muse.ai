@@ -2,7 +2,7 @@
 
 ## What this skill does
 
-Build the weekly announcement post for the AIアウトプット雑談会 (held every Saturday at 8:00) from the fixed example text in [references/example-announcement.md](references/example-announcement.md), date it to the Saturday of the week it is created, and — after the user approves the text — post it to the Discord thread 『AIアウトプット雑談会』 in SHIFT AI オンラインコミュニティ.
+Build the weekly announcement post for the AIアウトプット雑談会 (held every Saturday at 8:00), date it to the Saturday of the week it is created, and — after the user approves the text — post it to the Discord thread 『AIアウトプット雑談会』 in SHIFT AI オンラインコミュニティ. The announcement's wording is written fresh each time, using the example text in [references/example-announcement.md](references/example-announcement.md) as the reference for structure, tone and content. The only fixed text is the Zoom participation block (see below), which is reproduced exactly and never changed.
 
 Typical instruction from the user:
 
@@ -13,7 +13,7 @@ Typical instruction from the user:
 - This skill ships with `使い方シート.md`, a plain-language explanation of how to use it, written for the operator and for anyone they hand the skill to.
 - Whenever anyone asks how to use or explain this skill （使い方を教えて, 説明して, how does this work, and similar), start with the one-line summary from the top of the usage sheet (what the skill does, in one sentence), then ask which of the two they want. Never ask A or B before that summary: the listener cannot choose before knowing what the skill is. Cloning this repository and registering the skill are prerequisites shared by every skill in the collection, so do not explain them here. Many people only want to hear the explanation and will never run the skill, so never push a setup or a run on someone who only asked a question:
 - **A — explanation only:** Show the usage sheet as-is (paste its full contents or attach the file). Do not improvise a different explanation and do not shorten the sheet; the sheet is the single source for the explanation. Do not draft or post anything.
-- **B — actually use it:** Compute this week's Saturday, draft the announcement from the template, and explain using the sheet while the draft is prepared and confirmed.
+- **B — actually use it:** Compute this week's Saturday, draft the announcement (wording written fresh each time; only the Zoom block is fixed), and explain using the sheet while the draft is prepared and confirmed.
 
 ## Posting target
 
@@ -34,7 +34,7 @@ ID: 849 3335 2139 　
 パスコード: 343996
 ```
 
-The closing section 「💖改めてご紹介 」 and everything after it is also fixed text: reproduce it verbatim from the reference file.
+This block is the **only** fixed text in the announcement. Everything else — the opening, the seasonal greeting and the 【AIアウトプット雑談会とは？】 introduction — is rewritten each time (see Step 2).
 
 ## Step 1: Determine the date [重要]
 
@@ -48,12 +48,17 @@ Write the date into the announcement in the form 「M月D日（土）」 (for ex
 
 ## Step 2: Draft the announcement
 
-Start from [references/example-announcement.md](references/example-announcement.md) and change only these parts:
+Write the announcement **fresh each time**, using [references/example-announcement.md](references/example-announcement.md) as the reference for structure, tone and content — not as text to copy. The only part reproduced exactly is the fixed Zoom block above.
 
-1. **The date**: replace 「??月??日（土）」 with the date from Step 1.
-2. **The seasonal opening**: replace 「??月」 in 「??月に入り、…」 with the month number, and adapt the seasonal wording of that one paragraph to the actual season (the example text is written for November/autumn). Keep the following two lines of that paragraph as they are: 「今週も生成AIの進化が止まりません！🚀」 and 「AIで試したことや気になったことを、コーヒー片手に楽しくお話ししましょう☕️」.
+The draft must include:
 
-Everything else — the opening lines, the fixed participation block, and the section — is reproduced verbatim. Do not add new sections, new facts or new claims to the announcement.
+1. The event name 「AIアウトプット雑談会」 and an opening hook in the example's cheerful style.
+2. The date from Step 1, in the form 「M月D日（土）朝8時から開催です」.
+3. A seasonal greeting that fits the month and season, newly written.
+4. The fixed participation block, verbatim.
+5. A short introduction of what the gathering is, covering the example's points in fresh wording: every Saturday at 8:00; for people learning AI who struggle to keep motivation, face too many tools to choose from, or don't know where to start with output; small breakout rooms where you can talk lightly and find hints and new perspectives; any form of output is OK （インスタ、X、YouTube、文章、画像、仕事の工夫）; a welcoming close.
+
+Keep the whole text friendly, in the example's spirit (light emoji use is fine), and about the same length as the example — it must stay well under Discord's 2,000-character limit so it posts as one message. Do not invent facts or claims that are not in the example: no invented session topics, guests, or campaigns.
 
 ## Step 3: Confirm, then post
 

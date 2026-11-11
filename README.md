@@ -47,7 +47,7 @@ https://github.com/sinzy0925/skills_muse.ai.git
 | スキル | 内容 |
 |---|---|
 | `muse_make_gijiroku_ai-output` | オンラインコミュニティの雑談会の議事録と開催報告を作り、下書き確認のうえDiscordの指定スレッドへ投稿する（特定のコミュニティ向けに作ったものです） |
-| `muse_announcement_ai_output_to_discord` | 毎週土曜の雑談会の告知文を例文の型で作り（日付は作成した週の土曜日、Zoomの参加ブロックは一字一句固定）、下書き確認のうえDiscordの指定スレッドへ投稿する（特定のコミュニティ向けに作ったものです） |
+| `muse_announcement_ai_output_to_discord` | 毎週土曜の雑談会の告知文を、例文を参考に毎回新しく書いて作り（日付は作成した週の土曜日、固定はZoomの参加ブロックのみ）、下書き確認のうえDiscordの指定スレッドへ投稿する（特定のコミュニティ向けに作ったものです） |
 
 ### 経理・台帳
 
