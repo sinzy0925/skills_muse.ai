@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="color-scheme" content="light dark" />
+<link rel="icon" href="data:," />
+<title>住民税非課税シミュレーター</title>
+<style>
+:root{
+  --bg:#F7FAFF; --surface:#ffffff; --surface2:#EEF4FE; --ink:#1B2A44; --muted:#51617A;
+  --line:#C9D8F2; --blue:#2E6BE6; --blue-dark:#1D4FB8; --orange:#E87A2E; --orange-bg:#FDF0E4;
+  --green:#177245; --green-bg:#E4F4EA; --red:#B3261E; --red-bg:#FBE9E7; --amber:#8A5A00; --amber-bg:#FFF3D6;
+  --radius:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0E1626; --surface:#182238; --surface2:#1E2C48; --ink:#E8EEF9; --muted:#A9BAD6;
+    --line:#33456B; --blue:#6FA0F5; --blue-dark:#9DBEF8; --orange:#F09A5C; --orange-bg:#3A2A1A;
+    --green:#5CC98D; --green-bg:#173528; --red:#F0938C; --red-bg:#3D201E; --amber:#F2C96B; --amber-bg:#38300F; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic UI","Yu Gothic",Meiryo,system-ui,sans-serif;line-height:1.65;font-size:16px}
+main{max-width:1020px;margin:0 auto;padding:18px 14px 56px}
+h1{font-size:clamp(24px,5vw,34px);line-height:1.3;margin:6px 0 8px}
+.lede{color:var(--muted);margin:0 0 16px}
+.notice{background:var(--orange-bg);border:1.5px solid var(--orange);border-radius:var(--radius);padding:14px 16px;margin:0 0 14px}
+.notice strong{color:var(--orange)}
+.privacy{background:var(--surface2);border:1px solid var(--line);border-radius:var(--radius);padding:12px 16px;margin:0 0 20px;font-size:14.5px}
+a{color:var(--blue-dark)}
+section.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 16px;margin:0 0 16px}
+section.card h2{font-size:20px;margin:0 0 4px;display:flex;align-items:center;gap:10px}
+section.card h2 .num{background:var(--blue);color:#fff;width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:16px;flex:none}
+.hint{color:var(--muted);font-size:14px;margin:0 0 12px}
+label{display:block;font-weight:600;margin:14px 0 4px;font-size:15px}
+label .sub{font-weight:400;color:var(--muted);font-size:13.5px}
+input[type="date"],input[type="number"],input[type="text"],select{width:100%;min-height:44px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font-size:16px;font-family:inherit}
+input:focus,select:focus{outline:3px solid color-mix(in srgb,var(--blue) 35%,transparent);border-color:var(--blue)}
+.grid{display:grid;grid-template-columns:1fr;gap:0 16px}
+@media(min-width:720px){.grid{grid-template-columns:1fr 1fr}.grid .wide{grid-column:1/-1}}
+.radio-row,.check-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.radio-row label,.check-row label{margin:0;font-weight:500}
+.pill{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:999px;padding:10px 16px;min-height:44px;cursor:pointer;background:var(--surface)}
+.pill:has(input:checked){border-color:var(--blue);background:var(--surface2);font-weight:700}
+.checkline{display:flex;align-items:flex-start;gap:10px;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;margin-top:10px;cursor:pointer;min-height:44px}
+.checkline input{width:22px;height:22px;margin-top:3px;flex:none;accent-color:var(--blue)}
+.checkline span{font-size:15px}
+button{font-family:inherit;cursor:pointer}
+.btn-add{border:1.5px dashed var(--blue);color:var(--blue-dark);background:transparent;border-radius:10px;min-height:44px;padding:10px 18px;font-size:15px;font-weight:700;margin-top:14px}
+.btn-calc{display:block;width:100%;min-height:56px;border:none;border-radius:12px;background:var(--blue);color:#fff;font-size:19px;font-weight:800;padding:14px;margin:6px 0 18px}
+.btn-calc:active{background:var(--blue-dark)}
+.dep-row{border:1px solid var(--line);border-radius:12px;padding:6px 14px 14px;margin-top:12px;background:var(--surface2)}
+.dep-row h3{margin:10px 0 0;font-size:16px;display:flex;justify-content:space-between;align-items:center}
+.btn-del{border:1px solid var(--red);color:var(--red);background:transparent;border-radius:8px;min-height:38px;padding:6px 14px;font-size:14px}
+.hidden{display:none!important}
+.err{background:var(--red-bg);border:1.5px solid var(--red);color:var(--red);border-radius:var(--radius);padding:14px 16px;margin:0 0 16px;font-weight:600}
+.scenario-grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:760px){.scenario-grid{grid-template-columns:repeat(3,1fr)}}
+.scn{border:1.5px solid var(--line);border-radius:var(--radius);padding:16px;background:var(--surface)}
+.scn h3{margin:0 0 8px;font-size:18px}
+.badge{display:inline-block;border-radius:999px;padding:6px 14px;font-weight:800;font-size:15px;margin:4px 0 10px}
+.badge.free{background:var(--green-bg);color:var(--green);border:1.5px solid var(--green)}
+.badge.partial{background:var(--amber-bg);color:var(--amber);border:1.5px solid var(--amber)}
+.badge.tax{background:var(--red-bg);color:var(--red);border:1.5px solid var(--red)}
+table.kv{width:100%;border-collapse:collapse;font-size:14.5px}
+table.kv th{text-align:left;font-weight:600;color:var(--muted);padding:6px 8px 6px 0;vertical-align:top;width:46%}
+table.kv td{text-align:right;font-weight:700;padding:6px 0;white-space:nowrap}
+.margin{margin-top:10px;border-radius:10px;padding:10px 12px;font-size:15px;font-weight:700}
+.margin.ok{background:var(--green-bg);color:var(--green)}
+.margin.warn{background:var(--amber-bg);color:var(--amber)}
+.margin.over{background:var(--red-bg);color:var(--red)}
+.giri{background:var(--orange-bg);border:1.5px solid var(--orange);border-radius:10px;padding:12px 14px;margin-top:10px;font-size:14.5px;font-weight:600}
+.household{border-radius:var(--radius);padding:16px;margin-top:14px;font-size:17px;font-weight:800;text-align:center}
+.household.free{background:var(--green-bg);color:var(--green);border:1.5px solid var(--green)}
+.household.tax{background:var(--amber-bg);color:var(--amber);border:1.5px solid var(--amber)}
+.future{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:720px){.future{grid-template-columns:repeat(3,1fr)}}
+.fut{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--surface2);text-align:center}
+.fut .rate{font-size:20px;font-weight:800;color:var(--blue-dark)}
+.fut .years{font-size:17px;font-weight:700;margin-top:4px}
+.notes ol{margin:8px 0 0;padding-left:22px}
+.notes li{margin:8px 0;font-size:14.5px}
+details.formula{margin-top:10px}
+details.formula summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:700;color:var(--blue-dark)}
+details.formula p,details.formula li{font-size:14.5px}
+footer{color:var(--muted);font-size:13.5px;margin-top:10px}
+.age-view{font-size:13.5px;color:var(--muted);margin-top:4px}
+.copy-area{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin:0 0 16px}
+.btn-copy{display:block;width:100%;min-height:56px;border:2px solid var(--blue);border-radius:12px;background:var(--surface2);color:var(--blue-dark);font-size:17px;font-weight:800;padding:14px}
+.btn-copy:active{background:var(--surface)}
+.copy-status{margin:10px 0 0;padding:10px 12px;border-radius:10px;font-size:15px;font-weight:700;background:var(--amber-bg);color:var(--amber)}
+.copy-status.ok{background:var(--green-bg);color:var(--green)}
+#copyFallback{width:100%;margin-top:10px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font-size:14px;font-family:inherit}
+</style>
+</head>
+<body>
+<main>
+<h1>住民税非課税シミュレーター</h1>
+<p class="lede">年金生活者のための判定ツールです。ねんきん定期便の見込額などから、65歳・70歳・75歳の受給開始ごとに「住民税が非課税になるか」を概算します。氏名・住所の詳細・年金番号は入力しません。</p>
+
+<div class="notice" role="note">
+<strong>前提（令和8年度）</strong>：この計算は<strong>令和8年度の制度・金額を前提にした概算</strong>です。年金額や加給年金額、非課税限度額は毎年・制度改正で変わります。最新情報は
+<a href="https://www.nenkin.go.jp" target="_blank" rel="noopener">日本年金機構</a>・
+<a href="https://www.nta.go.jp" target="_blank" rel="noopener">国税庁</a>・お住まいの市区町村で確認してください。
+</div>
+<div class="privacy">入力した内容は<strong>保存されません</strong>（サーバーにも送りません）。ページを再読み込みするとすべて消えます。</div>
+
+<form id="simForm" novalidate>
+<!-- 本人 -->
+<section class="card">
+<h2><span class="num">1</span>本人の情報</h2>
+<div class="grid">
+<div>
+<label for="birth">生年月日</label>
+<input type="date" id="birth" />
+<div class="age-view" id="ageView"></div>
+</div>
+<div>
+<label>厚生年金の加入期間が20年以上ですか？<span class="sub">（加給年金の前提です。ねんきん定期便で確認できます）</span></label>
+<div class="radio-row">
+<label class="pill"><input type="radio" name="kosei20" value="yes" /> はい</label>
+<label class="pill"><input type="radio" name="kosei20" value="no" checked /> いいえ</label>
+</div>
+</div>
+<div>
+<label for="p65">定期便の老齢年金見込額（65歳受給開始）<span class="sub">円／年</span></label>
+<input type="number" id="p65" inputmode="numeric" min="0" placeholder="例：1800000" />
+</div>
+<div>
+<label for="p70">定期便の老齢年金見込額（70歳受給開始）<span class="sub">円／年</span></label>
+<input type="number" id="p70" inputmode="numeric" min="0" placeholder="例：2300000" />
+</div>
+<div>
+<label for="p75">定期便の老齢年金見込額（75歳受給開始）<span class="sub">円／年</span></label>
+<input type="number" id="p75" inputmode="numeric" min="0" placeholder="例：2900000" />
+</div>
+<div>
+<label for="otherIncome">その他の所得<span class="sub">所得金額・円／年（個人年金・パート・不動産など。企業年金やiDeCoの老齢給付がある場合は、その分の年金も上の見込額に足してください）</span></label>
+<input type="number" id="otherIncome" inputmode="numeric" min="0" value="0" />
+</div>
+</div>
+
+<label>本人の障害者の区分</label>
+<div class="radio-row">
+<label class="pill"><input type="radio" name="disability" value="none" checked /> なし</label>
+<label class="pill"><input type="radio" name="disability" value="ordinary" /> 普通障害者</label>
+<label class="pill"><input type="radio" name="disability" value="special" /> 特別障害者</label>
+</div>
+<p class="hint" style="margin-top:6px">非課税の特例（所得135万円以下）では、普通障害者でも特別障害者でも基準は同じ135万円です。</p>
+
+<label class="checkline"><input type="checkbox" id="widow" /><span>寡婦またはひとり親に当てはまる</span></label>
+<label class="checkline"><input type="checkbox" id="kaigoCert" /><span>要介護認定があり、「障害者控除対象者認定書」を受けられる見込みがある<span class="sub" style="display:block;color:var(--muted)">障害者手帳がなくても、認定書があれば税法上は障害者と同じ扱いになり、特例（所得135万円以下で非課税）の対象になります。申請制で、基準は市区町村ごとに異なります。</span></span></label>
+<label class="checkline"><input type="checkbox" id="disPension" /><span>障害年金・遺族年金を受けている<span class="sub" style="display:block;color:var(--muted)">障害年金・遺族年金は非課税なので、上の年金額には含めないでください。このチェックは注意表示のためだけに使います。</span></span></label>
+</section>
+
+<!-- 配偶者 -->
+<section class="card">
+<h2><span class="num">2</span>配偶者</h2>
+<label>配偶者はいますか？</label>
+<div class="radio-row">
+<label class="pill"><input type="radio" name="hasSpouse" value="no" checked /> いない</label>
+<label class="pill"><input type="radio" name="hasSpouse" value="yes" /> いる</label>
+</div>
+<div id="spouseFields" class="hidden">
+<div class="grid">
+<div>
+<label for="spBirth">配偶者の生年月日</label>
+<input type="date" id="spBirth" />
+<div class="age-view" id="spAgeView"></div>
+</div>
+<div>
+<label for="spPension">配偶者自身の老齢年金見込額（65歳受給開始）<span class="sub">円／年</span></label>
+<input type="number" id="spPension" inputmode="numeric" min="0" placeholder="例：900000" />
+</div>
+<div>
+<label for="spOther">配偶者のその他の所得<span class="sub">所得金額・円／年</span></label>
+<input type="number" id="spOther" inputmode="numeric" min="0" value="0" />
+</div>
+<div>
+<label>配偶者の障害者の区分</label>
+<div class="radio-row">
+<label class="pill"><input type="radio" name="spDisability" value="none" checked /> なし</label>
+<label class="pill"><input type="radio" name="spDisability" value="ordinary" /> 普通障害者</label>
+<label class="pill"><input type="radio" name="spDisability" value="special" /> 特別障害者</label>
+</div>
+</div>
+</div>
+<label class="checkline"><input type="checkbox" id="spWidow" /><span>配偶者は寡婦またはひとり親に当てはまる</span></label>
+<label class="checkline"><input type="checkbox" id="spKaigoCert" /><span>配偶者は要介護認定があり、「障害者控除対象者認定書」を受けられる見込みがある</span></label>
+<label class="checkline"><input type="checkbox" id="spDisPension" /><span>配偶者は障害年金・遺族年金を受けている<span class="sub" style="display:block;color:var(--muted)">配偶者が障害年金等を受けている場合、本人の配偶者加給年金は支給停止になるため、この試算では付けません。</span></span></label>
+</div>
+</section>
+
+<!-- 扶養家族 -->
+<section class="card">
+<h2><span class="num">3</span>子・その他の扶養家族</h2>
+<p class="hint">扶養している家族を一人ずつ追加してください。全員が非課税限度額の「人数」に数えられます。子の生年月日は加給年金の判定にも使います。</p>
+<div id="depList"></div>
+<button type="button" class="btn-add" id="addDep">＋ 扶養家族を追加する</button>
+</section>
+
+<!-- 地域 -->
+<section class="card">
+<h2><span class="num">4</span>お住まいの地域</h2>
+<div class="grid">
+<div>
+<label for="city">市町村名<span class="sub">表示と目安用です。番地などの詳細は入力しないでください</span></label>
+<input type="text" id="city" placeholder="例：○○市" autocomplete="off" />
+</div>
+<div>
+<label for="kyuchi">級地</label>
+<select id="kyuchi">
+<option value="1">1級地</option>
+<option value="2">2級地</option>
+<option value="3">3級地</option>
+</select>
+</div>
+</div>
+<p class="hint">級地は市区町村の条例で決まります。東京23区や政令指定都市は1級地が多いですが、あくまで目安として選び、違う場合は市区町村で確認してください。級地が違うと均等割の非課税限度額が変わります。</p>
+</section>
+
+<button type="submit" class="btn-calc">判定する</button>
+</form>
+
+<div id="errBox" class="err hidden" role="alert"></div>
+
+<!-- 結果 -->
+<div id="results" class="hidden">
+<section class="card">
+<h2>判定結果（本人）</h2>
+<p class="hint" id="resultSummary"></p>
+<div class="scenario-grid" id="scenarioGrid"></div>
+<div id="householdBox"></div>
+</section>
+
+<section class="card" id="spouseResultCard">
+<h2>配偶者の判定（65歳受給開始ベース）</h2>
+<div id="spouseResult"></div>
+</section>
+
+<section class="card">
+<h2>将来シナリオ ― 物価連動で年金が増えたら</h2>
+<p class="hint">65歳受給開始を基準に、年金額が毎年伸びる想定で試算します。非課税限度額は今のまま据え置く、いちばん厳しい前提です。加給年金は家族の年齢で毎年判定し直します（配偶者が65歳になると配偶者分は止まります）。</p>
+<div class="future" id="futureGrid"></div>
+<p class="hint" style="margin-top:12px">ギリギリで非課税に入っている場合、年金の改定で数年後に課税へ転じることがあります。余裕額が小さいときは、その前提で家計を考えてください。</p>
+</section>
+</div>
+
+<div class="copy-area" id="copyArea">
+<button type="button" class="btn-copy" id="copyResultBtn">結果をコピー（AI確認用）</button>
+<p class="hint" style="margin:8px 0 0">判定後に押すと、入力内容と判定結果をAI確認用の文章としてコピーできます。コピーした文章をチャットに貼って送ってください。</p>
+<p class="copy-status hidden" id="copyStatus" role="status"></p>
+<textarea id="copyFallback" class="hidden" readonly rows="10" aria-label="コピー用の結果テキスト"></textarea>
+</div>
+
+<section class="card notes">
+<h2>知っておきたい注意点</h2>
+<ol>
+<li>住民税は<strong>前年の所得</strong>で決まるため、この判定が当てはまるのは受給開始の<strong>翌年度から</strong>です。</li>
+<li>判定は控除前の<strong>合計所得金額</strong>で見ます。医療費控除などの所得控除を増やしても、非課税の判定は変わりません。</li>
+<li>判定する自治体は、その年の<strong>1月1日に住んでいた市区町村</strong>です。</li>
+<li>非課税でも、非課税証明書の発行や国民健康保険料の算定のために、<strong>住民税の申告が必要な場合</strong>があります。</li>
+<li>住民税非課税世帯になると、<strong>介護保険料や後期高齢者医療保険料の軽減</strong>などにもつながることがあります。</li>
+<li>障害者控除対象者認定書は<strong>申請制</strong>で、認定基準は市区町村ごとに異なります。要介護度が重くても認定されない場合があります。</li>
+<li>配偶者が20年以上の加入期間の老齢厚生年金の受給権を持つ場合も、配偶者の加給年金は支給停止になります（この試算では、障害年金・遺族年金の受給の有無のみで判定しています）。</li>
+<li>制度や金額は毎年変わります。この計算は令和8年度前提の概算なので、<strong>最新の年金情報を必ず確認</strong>してください。</li>
+</ol>
+<details class="formula">
+<summary>計算のしかた（式の確認）</summary>
+<ul>
+<li>公的年金等控除（65歳以上・年金以外の所得1,000万円以下）：年金額330万円以下→110万円／410万円以下→年金額×25％＋275,000円／770万円以下→×15％＋685,000円／1,000万円以下→×5％＋1,455,000円／1,000万円超→1,955,000円</li>
+<li>雑所得 ＝ 年金額（定期便見込額＋加給年金）－ 公的年金等控除額、合計所得金額 ＝ 雑所得 ＋ その他の所得</li>
+<li>均等割の非課税限度額 ＝ 級地単価×人数 ＋ 100,000円 ＋（扶養ありの場合の級地加算）。単価は1級地350,000円・2級地315,000円・3級地280,000円、加算は1級地210,000円・2級地189,000円・3級地168,000円。人数 ＝ 本人＋配偶者＋扶養家族</li>
+<li>所得割の非課税限度額 ＝ 350,000円×人数 ＋ 100,000円 ＋（扶養ありの場合 320,000円）</li>
+<li>特例：障害者・寡婦・ひとり親・障害者控除対象者認定書の見込み のいずれかに当てはまる人は、合計所得金額1,350,000円以下で完全非課税</li>
+<li>加給年金（令和8年度前提）：基本額243,800円、配偶者分には本人の生年月日に応じた特別加算。加給年金には繰下げ増額は付きません</li>
+</ul>
+</details>
+</section>
+
+<footer>このページは概算のための道具です。最終的な判定は、お住まいの市区町村の課税担当・年金事務所でご確認ください。</footer>
+</main>
+
+<script>
+(function(){
+"use strict";
+var YEN = function(n){ return Math.round(n).toLocaleString("ja-JP") + "円"; };
+var MAN = function(n){ return "約" + (Math.round(n/1000)/10).toLocaleString("ja-JP") + "万円"; };
+function $(id){ return document.getElementById(id); }
+function num(id){ var v = parseFloat($(id).value); return (isNaN(v)||v<0)?0:v; }
+function radioVal(name){ var el=document.querySelector('input[name="'+name+'"]:checked'); return el?el.value:""; }
+function parseDate(id){ var v=$(id).value; if(!v) return null; var d=new Date(v+"T00:00:00"); return isNaN(d.getTime())?null:d; }
+function addYears(d,y){ var n=new Date(d.getTime()); n.setFullYear(n.getFullYear()+y); return n; }
+function ageAt(birth, at){ var a=at.getFullYear()-birth.getFullYear(); var m=at.getMonth()-birth.getMonth(); if(m<0||(m===0&&at.getDate()<birth.getDate())) a--; return a; }
+
+/* ---------- 扶養家族の行 ---------- */
+var depList=$("depList"), depCount=0;
+function depRow(){
+  depCount++;
+  var wrap=document.createElement("div"); wrap.className="dep-row"; wrap.dataset.dep="1";
+  wrap.innerHTML =
+    '<h3>扶養家族 ' + depCount + '人目 <button type="button" class="btn-del">削除</button></h3>' +
+    '<div class="grid">' +
+    '<div><label>生年月日</label><input type="date" class="dep-birth" /></div>' +
+    '<div><label>区分</label><select class="dep-type"><option value="child">子</option><option value="other">子以外（親など）</option></select></div>' +
+    '</div>' +
+    '<label class="checkline dep-dis-wrap"><input type="checkbox" class="dep-dis" /><span>子が障害の状態（年金制度の1級・2級）にある<span style="display:block;color:var(--muted);font-size:13.5px">加給年金の対象が20歳未満まで延びます</span></span></label>';
+  wrap.querySelector(".btn-del").addEventListener("click",function(){ wrap.remove(); });
+  var typeSel=wrap.querySelector(".dep-type"), disWrap=wrap.querySelector(".dep-dis-wrap");
+  typeSel.addEventListener("change",function(){ disWrap.classList.toggle("hidden", typeSel.value!=="child"); });
+  depList.appendChild(wrap);
+}
+$("addDep").addEventListener("click", depRow);
+function getDeps(){
+  var rows=depList.querySelectorAll("[data-dep]"), out=[];
+  rows.forEach(function(r){
+    var bv=r.querySelector(".dep-birth").value;
+    out.push({
+      birth: bv? new Date(bv+"T00:00:00") : null,
+      type: r.querySelector(".dep-type").value,
+      disabled: r.querySelector(".dep-dis").checked
+    });
+  });
+  return out;
+}
+
+/* ---------- 配偶者欄の表示 ---------- */
+document.querySelectorAll('input[name="hasSpouse"]').forEach(function(r){
+  r.addEventListener("change",function(){ $("spouseFields").classList.toggle("hidden", radioVal("hasSpouse")!=="yes"); });
+});
+
+/* ---------- 現在の年齢表示 ---------- */
+function showAge(id, viewId){
+  var d=parseDate(id); if(!d){ $(viewId).textContent=""; return; }
+  var now=new Date(2026,10,11);
+  $(viewId).textContent="現在 " + ageAt(d, now) + "歳（2026年11月11日時点）";
+}
+$("birth").addEventListener("change",function(){ showAge("birth","ageView"); });
+$("spBirth").addEventListener("change",function(){ showAge("spBirth","spAgeView"); });
+
+/* ---------- 計算部品 ---------- */
+function pensionDeduction(p){
+  if(p<=3300000) return 1100000;
+  if(p<=4100000) return p*0.25+275000;
+  if(p<=7700000) return p*0.15+685000;
+  if(p<=10000000) return p*0.05+1455000;
+  return 1955000;
+}
+function miscIncome(p){ return Math.max(0, p - pensionDeduction(p)); }
+
+function specialAddition(birth){
+  // 昭和18年4月2日 = 1943-04-02 以後 → 179,900円、以下段階
+  var t=birth.getTime();
+  var d=function(y,m,dd){ return new Date(y,m-1,dd).getTime(); };
+  if(t>=d(1943,4,2)) return 179900;
+  if(t>=d(1942,4,2)) return 143900;
+  if(t>=d(1941,4,2)) return 108000;
+  if(t>=d(1940,4,2)) return 71900;
+  if(t>=d(1934,4,2)) return 36000;
+  return 0;
+}
+/* 子の加給対象の末日：18歳到達年度の末日（3月31日） */
+function childEndDate(birth){
+  var b18=addYears(birth,18);
+  // 年度は4月1日〜翌3月31日。18歳の誕生日が4〜12月なら翌年3月31日、1〜3月なら同年3月31日
+  var y = (b18.getMonth()>=3) ? b18.getFullYear()+1 : b18.getFullYear();
+  return new Date(y,2,31,23,59,59);
+}
+function kakyuAt(startDate, ctx){
+  // ctx: {kosei20, birth, spBirth(hasSpouse), spDisPension, deps}
+  if(!ctx.kosei20 || !ctx.birth) return {total:0, spouse:0, child:0, childCount:0};
+  var spouseAmt=0, childAmt=0, cc=0;
+  if(ctx.hasSpouse && ctx.spBirth && !ctx.spDisPension){
+    if(ageAt(ctx.spBirth, startDate) < 65){
+      spouseAmt = 243800 + specialAddition(ctx.birth);
+    }
+  }
+  ctx.deps.forEach(function(dep){
+    if(dep.type!=="child" || !dep.birth) return;
+    var ok=false;
+    if(dep.disabled){ ok = ageAt(dep.birth, startDate) < 20; }
+    else { ok = startDate <= childEndDate(dep.birth); }
+    if(ok){ cc++; childAmt += (cc<=2 ? 243800 : 81300); }
+  });
+  return { total: spouseAmt+childAmt, spouse: spouseAmt, child: childAmt, childCount: cc };
+}
+function limits(kyuchi, n){
+  var unit={1:350000,2:315000,3:280000}[kyuchi];
+  var add={1:210000,2:189000,3:168000}[kyuchi];
+  var kintou = unit*n + 100000 + (n>=2 ? add : 0);
+  var shotoku = 350000*n + 100000 + (n>=2 ? 320000 : 0);
+  return {kintou:kintou, shotoku:shotoku};
+}
+function judge(total, lim, special){
+  var completeLim = special ? Math.max(lim.kintou, 1350000) : lim.kintou;
+  if(total <= completeLim) return {level:"free", label:"住民税 非課税（均等割・所得割とも）", completeLim:completeLim};
+  if(total <= lim.shotoku) return {level:"partial", label:"所得割のみ非課税（均等割は課税）", completeLim:completeLim};
+  return {level:"tax", label:"住民税 課税", completeLim:completeLim};
+}
+/* 完全非課税になる年金額（加給込み）の上限を逆算 */
+function maxPensionForLimit(completeLim, otherIncome){
+  var target = completeLim - otherIncome; // 許容できる雑所得
+  if(target < 0) return 0;
+  if(target <= 2200000) return target + 1100000;
+  if(target <= 2800000) return (target + 275000)/0.75;
+  if(target <= 5855000) return (target + 685000)/0.85;
+  if(target <= 8045000) return (target + 1455000)/0.95;
+  return target + 1955000;
+}
+
+/* ---------- 判定実行 ---------- */
+$("simForm").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  var err=$("errBox"); err.classList.add("hidden"); err.textContent="";
+  var birth=parseDate("birth");
+  var p65=num("p65"), p70=num("p70"), p75=num("p75");
+  var problems=[];
+  if(!birth) problems.push("本人の生年月日を入力してください。");
+  if(p65<=0 && p70<=0 && p75<=0) problems.push("定期便の老齢年金見込額を、少なくとも1つ入力してください。");
+  var hasSpouse = radioVal("hasSpouse")==="yes";
+  var spBirth = hasSpouse ? parseDate("spBirth") : null;
+  if(hasSpouse && !spBirth) problems.push("配偶者の生年月日を入力してください（加給年金の判定に使います）。");
+  if(problems.length){
+    err.textContent = problems.join(" ");
+    err.classList.remove("hidden");
+    $("results").classList.add("hidden");
+    err.scrollIntoView({behavior:"smooth", block:"center"});
+    return;
+  }
+
+  var kyuchi=parseInt($("kyuchi").value,10);
+  var city=$("city").value.trim();
+  var deps=getDeps();
+  var n = 1 + (hasSpouse?1:0) + deps.length;
+  var lim = limits(kyuchi, n);
+  var other = num("otherIncome");
+  var special = (radioVal("disability")!=="none") || $("widow").checked || $("kaigoCert").checked;
+  var ctx={ kosei20: radioVal("kosei20")==="yes", birth:birth, hasSpouse:hasSpouse, spBirth:spBirth, spDisPension: hasSpouse && $("spDisPension").checked, deps:deps };
+
+  var scenarios=[
+    {age:65, base:p65},
+    {age:70, base:p70},
+    {age:75, base:p75}
+  ];
+  var grid=$("scenarioGrid"); grid.innerHTML="";
+  var firstJudge=null;
+
+  scenarios.forEach(function(sc){
+    var card=document.createElement("div"); card.className="scn";
+    if(sc.base<=0){
+      card.innerHTML="<h3>"+sc.age+"歳 受給開始</h3><p class='hint'>見込額が未入力のため判定できません。</p>";
+      grid.appendChild(card); return;
+    }
+    var startDate=addYears(birth, sc.age);
+    var kak=kakyuAt(startDate, ctx);
+    var pension=sc.base + kak.total;
+    var ded=pensionDeduction(pension);
+    var misc=miscIncome(pension);
+    var total=misc + other;
+    var j=judge(total, lim, special);
+    if(sc.age===65) firstJudge={j:j,total:total};
+    var maxP=maxPensionForLimit(j.completeLim, other);
+    var maxBase=Math.max(0, maxP - kak.total);
+    var margin=j.completeLim - total;
+    var rows =
+      "<tr><th>年金額（判定用）</th><td>"+YEN(pension)+"</td></tr>" +
+      "<tr><th>うち定期便見込額</th><td>"+YEN(sc.base)+"</td></tr>" +
+      (kak.total>0 ? "<tr><th>うち加給年金</th><td>"+YEN(kak.total)+"</td></tr>" : "<tr><th>加給年金</th><td>0円</td></tr>") +
+      (kak.spouse>0 ? "<tr><th>（配偶者分）</th><td>"+YEN(kak.spouse)+"</td></tr>" : "") +
+      (kak.child>0 ? "<tr><th>（子分 "+kak.childCount+"人）</th><td>"+YEN(kak.child)+"</td></tr>" : "") +
+      "<tr><th>公的年金等控除</th><td>－"+YEN(ded)+"</td></tr>" +
+      "<tr><th>雑所得</th><td>"+YEN(misc)+"</td></tr>" +
+      (other>0 ? "<tr><th>その他の所得</th><td>"+YEN(other)+"</td></tr>" : "") +
+      "<tr><th>合計所得金額</th><td>"+YEN(total)+"</td></tr>" +
+      "<tr><th>完全非課税の限度額</th><td>"+YEN(j.completeLim)+"</td></tr>" +
+      "<tr><th>所得割の非課税限度額</th><td>"+YEN(lim.shotoku)+"</td></tr>";
+    var marginHtml;
+    if(j.level==="free"){
+      var cls = margin < 100000 ? "warn" : "ok";
+      marginHtml = "<div class='margin "+cls+"'>余裕額 " + YEN(margin) + "（" + MAN(margin) + "）</div>";
+      if(margin < 100000){
+        marginHtml += "<div class='giri'>ギリギリです。年金額は物価連動で毎年改定されるため、数年後に課税へ転じる可能性があります。下の「将来シナリオ」も確認してください。</div>";
+      }
+    } else if(j.level==="partial"){
+      marginHtml = "<div class='margin warn'>完全非課税の限度額を " + YEN(-margin) + " 超過（所得割の限度額までは " + YEN(lim.shotoku-total) + "）</div>";
+    } else {
+      marginHtml = "<div class='margin over'>所得割の限度額を " + YEN(total-lim.shotoku) + " 超過しています</div>";
+    }
+    card.innerHTML = "<h3>"+sc.age+"歳 受給開始</h3>" +
+      "<span class='badge "+j.level+"'>"+j.label+"</span>" +
+      "<table class='kv'>"+rows+"</table>" + marginHtml +
+      "<p class='hint' style='margin-top:10px'>完全非課税になる年金額の上限（加給込み）：<strong>"+YEN(maxP)+"</strong><br>定期便見込額ベースの上限：<strong>"+YEN(maxBase)+"</strong></p>" +
+      (kak.spouse>0 && ctx.spBirth ? "<p class='hint'>※配偶者加給は、配偶者が65歳になる年（"+addYears(ctx.spBirth,65).getFullYear()+"年）で止まります。</p>" : "");
+    grid.appendChild(card);
+  });
+
+  var summary = "お住まい：" + (city? city : "（市町村名 未入力）") + "／" + kyuchi + "級地／人数 " + n + "人（本人" + (hasSpouse?"＋配偶者":"") + (deps.length? "＋扶養家族"+deps.length+"人":"") + "）で判定しました。";
+  if(special) summary += " 本人は特例（障害者・寡婦／ひとり親・認定書の見込み）の対象として、所得135万円のラインも併用しています。";
+  if($("disPension").checked) summary += " ※障害年金・遺族年金は非課税のため、年金額には含めていません。";
+  $("resultSummary").textContent = summary;
+
+  /* 配偶者の判定 */
+  var spCard=$("spouseResultCard"), spBox=$("spouseResult"), house=$("householdBox");
+  house.innerHTML="";
+  var spJudge=null;
+  if(hasSpouse){
+    spCard.classList.remove("hidden");
+    var spPension=num("spPension"), spOther=num("spOther");
+    var spSpecial=(radioVal("spDisability")!=="none") || $("spWidow").checked || $("spKaigoCert").checked;
+    if(spPension>0){
+      var spTotal=miscIncome(spPension)+spOther;
+      spJudge=judge(spTotal, lim, spSpecial);
+      spBox.innerHTML =
+        "<span class='badge "+spJudge.level+"'>"+spJudge.label+"</span>" +
+        "<table class='kv'>" +
+        "<tr><th>配偶者の年金額</th><td>"+YEN(spPension)+"</td></tr>" +
+        "<tr><th>公的年金等控除</th><td>－"+YEN(pensionDeduction(spPension))+"</td></tr>" +
+        "<tr><th>合計所得金額</th><td>"+YEN(spTotal)+"</td></tr>" +
+        "<tr><th>完全非課税の限度額</th><td>"+YEN(spJudge.completeLim)+"</td></tr>" +
+        "</table>" +
+        "<p class='hint' style='margin-top:8px'>配偶者自身の加給年金は含めていません。限度額は世帯の人数（"+n+"人）で計算した目安です。</p>";
+    } else {
+      spBox.innerHTML="<p class='hint'>配偶者の年金額が未入力のため、配偶者の判定はできません。</p>";
+    }
+    if(firstJudge && spJudge){
+      var bothFree = firstJudge.j.level==="free" && spJudge.level==="free";
+      var div=document.createElement("div");
+      div.className="household " + (bothFree?"free":"tax");
+      div.textContent = bothFree ? "世帯の目安：住民税非課税世帯の目安です（本人・配偶者とも完全非課税）" : "世帯の目安：世帯としては課税世帯の目安です（どちらかが課税）";
+      house.appendChild(div);
+    }
+  } else {
+    spCard.classList.add("hidden");
+  }
+
+  /* 将来シナリオ（65歳開始ベース） */
+  var fut=$("futureGrid"); fut.innerHTML="";
+  if(p65>0 && birth){
+    var start65=addYears(birth,65);
+    [0,0.01,0.02].forEach(function(r){
+      var crossText="", crossed=false;
+      for(var y=0;y<=30;y++){
+        var at=new Date(start65.getTime()); at.setFullYear(at.getFullYear()+y);
+        var kakY=kakyuAt(at, ctx);
+        var pensionY=p65*Math.pow(1+r,y) + kakY.total;
+        var totalY=miscIncome(pensionY)+other;
+        var jY=judge(totalY, lim, special);
+        if(jY.level!=="free"){ crossText = (y===0) ? "受給開始の時点ですでに完全非課税を超えています" : "約" + y + "年後に完全非課税を超える見込み"; crossed=true; break; }
+      }
+      if(!crossed) crossText="30年以上 非課税の見込み";
+      var d=document.createElement("div"); d.className="fut";
+      d.innerHTML="<div class='rate'>年金 年＋" + Math.round(r*100) + "％</div><div class='years'>"+crossText+"</div>";
+      fut.appendChild(d);
+    });
+  } else {
+    fut.innerHTML="<p class='hint'>65歳受給開始の見込額を入力すると、将来シナリオを表示します。</p>";
+  }
+
+  $("results").classList.remove("hidden");
+  $("results").scrollIntoView({behavior:"smooth", block:"start"});
+});
+})();
+</script>
+<script>
+(function(){
+"use strict";
+function $(id){ return document.getElementById(id); }
+function rawVal(id){ var el=$(id); return el ? el.value.trim() : ""; }
+function fmtDate(v){
+  if(!v) return "未入力";
+  var p=v.split("-");
+  if(p.length===3) return p[0]+"年"+parseInt(p[1],10)+"月"+parseInt(p[2],10)+"日";
+  return v;
+}
+function fmtMoney(v){
+  if(v==="" || v===null || v===undefined) return "未入力";
+  var n=parseFloat(v);
+  if(isNaN(n)) return "未入力";
+  return Math.round(n).toLocaleString("ja-JP")+"円";
+}
+function moneyInput(id){
+  var el=$(id);
+  if(!el) return "未入力";
+  if(el.value.trim()==="") return "未入力";
+  return fmtMoney(el.value);
+}
+function radioVal(name){ var el=document.querySelector('input[name="'+name+'"]:checked'); return el?el.value:""; }
+function radioLabel(name, map){
+  var v=radioVal(name);
+  return map[v] || "未入力";
+}
+function checkLabel(id){
+  var el=$(id);
+  if(!el) return "未入力";
+  return el.checked ? "チェックあり（該当）" : "チェックなし（該当なし）";
+}
+function cleanText(el){
+  if(!el) return "";
+  return (el.innerText || el.textContent || "").replace(/\n{3,}/g,"\n\n").trim();
+}
+function buildCopyText(){
+  var lines=[];
+  lines.push("muse_check_resident_tax_simulation を実行して");
+  lines.push("（住民税非課税シミュレーターの結果です。詳細確認をお願いします）");
+  lines.push("");
+  /* 本人 */
+  lines.push("【本人の入力】");
+  lines.push("生年月日：" + fmtDate(rawVal("birth")));
+  lines.push("厚生年金の加入期間が20年以上：" + (radioVal("kosei20")==="yes" ? "はい" : (radioVal("kosei20")==="no" ? "いいえ" : "未入力")));
+  lines.push("年金額（65歳受給開始・定期便見込額）：" + moneyInput("p65"));
+  lines.push("年金額（70歳受給開始・定期便見込額）：" + moneyInput("p70"));
+  lines.push("年金額（75歳受給開始・定期便見込額）：" + moneyInput("p75"));
+  lines.push("その他の所得：" + moneyInput("otherIncome"));
+  var city=rawVal("city");
+  var kyuchiEl=$("kyuchi");
+  var kyuchiTxt=kyuchiEl ? kyuchiEl.options[kyuchiEl.selectedIndex].text : "未入力";
+  lines.push("地域：市町村名 " + (city ? city : "未入力") + "／級地 " + kyuchiTxt);
+  lines.push("障害者の区分：" + radioLabel("disability",{none:"なし",ordinary:"普通障害者",special:"特別障害者"}));
+  lines.push("特例・障害年金・遺族年金を受けている：" + checkLabel("disPension"));
+  lines.push("特例・寡婦またはひとり親に当てはまる：" + checkLabel("widow"));
+  lines.push("特例・障害者控除対象者認定書を受けられる見込みがある：" + checkLabel("kaigoCert"));
+  /* 配偶者 */
+  var hasSpouse = radioVal("hasSpouse")==="yes";
+  if(hasSpouse){
+    lines.push("");
+    lines.push("【配偶者の入力】");
+    lines.push("生年月日：" + fmtDate(rawVal("spBirth")));
+    lines.push("年金額（65歳受給開始・配偶者自身の見込額）：" + moneyInput("spPension"));
+    lines.push("その他の所得：" + moneyInput("spOther"));
+    lines.push("障害者の区分：" + radioLabel("spDisability",{none:"なし",ordinary:"普通障害者",special:"特別障害者"}));
+    lines.push("特例・障害年金・遺族年金を受けている：" + checkLabel("spDisPension"));
+    lines.push("特例・寡婦またはひとり親に当てはまる：" + checkLabel("spWidow"));
+    lines.push("特例・障害者控除対象者認定書を受けられる見込みがある：" + checkLabel("spKaigoCert"));
+  }
+  /* 扶養家族 */
+  var depRows=document.querySelectorAll("#depList [data-dep]");
+  if(depRows.length>0){
+    lines.push("");
+    lines.push("【扶養家族】");
+    lines.push("人数：" + depRows.length + "人");
+    depRows.forEach(function(r, idx){
+      var bv=r.querySelector(".dep-birth") ? r.querySelector(".dep-birth").value.trim() : "";
+      var typeSel=r.querySelector(".dep-type");
+      var typeTxt=typeSel ? typeSel.options[typeSel.selectedIndex].text : "未入力";
+      var disEl=r.querySelector(".dep-dis");
+      var disTxt=(typeSel && typeSel.value==="child") ? ("／子が障害の状態（年金制度の1級・2級）：" + (disEl && disEl.checked ? "チェックあり（該当）" : "チェックなし（該当なし）")) : "";
+      lines.push((idx+1)+"人目：生年月日 " + fmtDate(bv) + "／区分 " + typeTxt + disTxt);
+    });
+  }
+  /* 判定結果 */
+  lines.push("");
+  lines.push("【判定結果】");
+  var summary=cleanText($("resultSummary"));
+  if(summary) lines.push("判定の条件：" + summary);
+  var cards=document.querySelectorAll("#scenarioGrid .scn");
+  if(cards.length){
+    lines.push("― 本人の判定 ―");
+    cards.forEach(function(c){
+      var t=cleanText(c);
+      if(t) lines.push(t);
+    });
+  } else {
+    lines.push("本人の判定：表示なし");
+  }
+  var house=cleanText($("householdBox"));
+  lines.push("― 世帯の結論 ―");
+  lines.push(house ? house : "表示なし（配偶者の判定がないため、世帯の結論は表示されていません）");
+  if(hasSpouse){
+    var spCard=$("spouseResultCard");
+    lines.push("― 配偶者の判定 ―");
+    if(spCard && !spCard.classList.contains("hidden")){
+      var spT=cleanText($("spouseResult"));
+      lines.push(spT ? spT : "表示なし");
+    } else {
+      lines.push("表示なし");
+    }
+  }
+  var fut=cleanText($("futureGrid"));
+  if(fut){
+    lines.push("― 将来シナリオの要点 ―");
+    lines.push(fut);
+  }
+  return lines.join("\n");
+}
+var btn=$("copyResultBtn"), status=$("copyStatus"), fallback=$("copyFallback");
+var originalLabel=btn.textContent;
+var revertTimer=null;
+function showStatus(msg, ok){
+  status.textContent=msg;
+  status.classList.remove("hidden");
+  status.classList.toggle("ok", !!ok);
+}
+function markCopied(){
+  btn.textContent="コピーしました";
+  showStatus("コピーしました。チャットに貼って送ってください。", true);
+  if(revertTimer) clearTimeout(revertTimer);
+  revertTimer=setTimeout(function(){ btn.textContent=originalLabel; }, 3000);
+}
+function fallbackCopy(text){
+  fallback.value=text;
+  fallback.classList.remove("hidden");
+  fallback.focus();
+  fallback.select();
+  var ok=false;
+  try{ ok=document.execCommand("copy"); }catch(e){ ok=false; }
+  if(ok){ fallback.classList.add("hidden"); markCopied(); }
+  else { showStatus("自動でコピーできませんでした。下のテキストをすべて選択して手動でコピーしてください。", false); }
+}
+btn.addEventListener("click", function(){
+  var results=$("results");
+  if(!results || results.classList.contains("hidden")){
+    fallback.classList.add("hidden");
+    showStatus("先に判定してください。「判定する」ボタンを押して結果を表示してから、もう一度押してください。", false);
+    var calc=document.querySelector(".btn-calc");
+    if(calc) calc.scrollIntoView({behavior:"smooth", block:"center"});
+    return;
+  }
+  var text=buildCopyText();
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){
+      fallback.classList.add("hidden");
+      markCopied();
+    }).catch(function(){ fallbackCopy(text); });
+  } else {
+    fallbackCopy(text);
+  }
+});
+})();
+</script>
+</body>
+</html>
