@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>スキルランチャー</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --bg:#F7FAFF;
+        --bg-soft:#EDF3FE;
+        --card:#FFFFFF;
+        --ink:#16233B;
+        --ink-2:#43536E;
+        --ink-3:#71809A;
+        --line:#D8E3F5;
+        --blue:#2E6BE6;
+        --blue-dark:#1D4FB8;
+        --blue-tint:#E4EDFD;
+        --orange:#E87A2E;
+        --orange-dark:#C85F18;
+        --orange-tint:#FDEEE1;
+        --code-bg:#101D33;
+        --code-ink:#DCE8FF;
+        --ok:#1E8E5A;
+        --shadow:0 1px 2px rgba(22,45,90,.05),0 10px 28px -12px rgba(22,45,90,.18);
+        --shadow-hover:0 2px 4px rgba(22,45,90,.06),0 16px 36px -12px rgba(22,45,90,.24);
+        --radius:16px;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#0C1524;
+          --bg-soft:#122036;
+          --card:#15253F;
+          --ink:#EAF1FD;
+          --ink-2:#B9C7DE;
+          --ink-3:#8CA0BE;
+          --line:#2A3F61;
+          --blue:#6E9BFF;
+          --blue-dark:#9DBDFF;
+          --blue-tint:#1B3055;
+          --orange:#F08F4C;
+          --orange-dark:#FFB07A;
+          --orange-tint:#3A2716;
+          --code-bg:#060D1A;
+          --code-ink:#DCE8FF;
+          --ok:#4CC48A;
+          --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px -12px rgba(0,0,0,.5);
+          --shadow-hover:0 2px 4px rgba(0,0,0,.35),0 16px 36px -12px rgba(0,0,0,.6);
+        }
+      }
+      *{box-sizing:border-box;}
+      html{scroll-behavior:smooth;}
+      body{
+        margin:0;
+        background:var(--bg);
+        color:var(--ink);
+        font-family:"Noto Sans JP",-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+        font-size:15px;
+        line-height:1.65;
+        -webkit-font-smoothing:antialiased;
+      }
+      button,[role="button"],select,summary,input:not([type="checkbox"],[type="radio"]){min-height:2rem;}
+      .wrap{max-width:1060px;margin:0 auto;padding:20px 16px 64px;}
+
+      /* ---------- How it works ---------- */
+      .howto{
+        background:var(--card);
+        border:1px solid var(--line);
+        border-radius:var(--radius);
+        box-shadow:var(--shadow);
+        padding:18px 18px 16px;
+      }
+      .howto h1{
+        font-size:19px;font-weight:900;margin:0 0 4px;letter-spacing:.01em;
+      }
+      .howto .lead{margin:0 0 14px;color:var(--ink-2);font-size:14px;}
+      .howto .lead strong{color:var(--ink);}
+      .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+      .step{
+        display:flex;gap:10px;align-items:flex-start;
+        background:var(--bg-soft);
+        border-radius:12px;
+        padding:12px 12px 10px;
+      }
+      .step .num{
+        flex:none;width:26px;height:26px;border-radius:50%;
+        background:var(--blue);color:#fff;
+        font-weight:700;font-size:14px;line-height:26px;text-align:center;
+      }
+      .step:nth-child(2) .num{background:var(--orange);}
+      .step:nth-child(3) .num{background:var(--ok);}
+      .step p{margin:0;font-size:13px;line-height:1.55;color:var(--ink-2);}
+      .step p b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:1px;}
+      @media (max-width:640px){ .steps{grid-template-columns:1fr;} }
+
+      /* ---------- Toolbar ---------- */
+      .toolbar{
+        position:sticky;top:0;z-index:20;
+        margin:18px -16px 0;padding:10px 16px;
+        background:color-mix(in srgb, var(--bg) 88%, transparent);
+        backdrop-filter:blur(8px);
+        -webkit-backdrop-filter:blur(8px);
+      }
+      .search{
+        display:flex;align-items:center;gap:8px;
+        background:var(--card);border:1px solid var(--line);border-radius:999px;
+        padding:0 14px;box-shadow:var(--shadow);
+      }
+      .search svg{flex:none;color:var(--ink-3);}
+      .search input{
+        border:0;outline:0;background:transparent;color:var(--ink);
+        font:inherit;font-size:15px;width:100%;height:44px;
+      }
+      .search input::placeholder{color:var(--ink-3);}
+      .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+      .chip{
+        appearance:none;border:1px solid var(--line);background:var(--card);
+        color:var(--ink-2);font:inherit;font-size:13px;font-weight:700;
+        border-radius:999px;padding:8px 14px;min-height:38px;cursor:pointer;
+        text-decoration:none;display:inline-flex;align-items:center;gap:6px;
+      }
+      .chip:hover{border-color:var(--blue);color:var(--blue);}
+      .chip .cnt{font-size:11px;background:var(--blue-tint);color:var(--blue);border-radius:999px;padding:1px 7px;font-weight:700;}
+
+      /* ---------- Sections ---------- */
+      section.cat{margin-top:34px;scroll-margin-top:130px;}
+      .cat-head{display:flex;align-items:center;gap:10px;margin:0 2px 14px;}
+      .cat-ico{
+        flex:none;width:38px;height:38px;border-radius:11px;
+        display:grid;place-items:center;color:#fff;
+      }
+      .cat-head h2{font-size:18px;font-weight:900;margin:0;}
+      .cat-head .cat-note{margin:0;color:var(--ink-3);font-size:12.5px;}
+      .cat-head .spacer{flex:1;}
+      .cat-count{font-size:12px;color:var(--ink-3);font-weight:700;white-space:nowrap;}
+
+      .grid{display:grid;grid-template-columns:1fr;gap:14px;}
+      @media (min-width:760px){ .grid{grid-template-columns:1fr 1fr;} }
+
+      /* ---------- Card ---------- */
+      .card{
+        background:var(--card);
+        border:1px solid var(--line);
+        border-radius:var(--radius);
+        box-shadow:var(--shadow);
+        padding:16px 16px 14px;
+        display:flex;flex-direction:column;
+        transition:box-shadow .18s ease;
+      }
+      .card:hover{box-shadow:var(--shadow-hover);}
+      .card .no{
+        font-size:11px;font-weight:700;color:var(--ink-3);letter-spacing:.08em;
+      }
+      .skill-name{
+        font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+        font-size:14.5px;font-weight:700;line-height:1.45;
+        overflow-wrap:anywhere;
+        margin:2px 0 8px;
+        color:var(--ink);
+      }
+      .skill-name .pre{color:var(--blue);}
+      .desc{margin:0 0 14px;color:var(--ink-2);font-size:13.5px;line-height:1.7;flex:1;}
+      .actions{display:flex;gap:8px;}
+      .btn{
+        appearance:none;cursor:pointer;font:inherit;font-weight:700;font-size:14px;
+        border-radius:11px;padding:10px 16px;min-height:46px;
+        display:inline-flex;align-items:center;justify-content:center;gap:7px;
+        transition:background .15s ease,border-color .15s ease,color .15s ease;
+      }
+      .btn-how{
+        flex:1;background:var(--card);color:var(--blue);
+        border:1.5px solid var(--blue);
+      }
+      .btn-how:hover{background:var(--blue-tint);}
+      .btn-how[aria-expanded="true"]{background:var(--blue);color:#fff;}
+      .btn-run{
+        flex:1.25;background:var(--orange);color:#fff;border:1.5px solid var(--orange);
+      }
+      .btn-run:hover{background:var(--orange-dark);border-color:var(--orange-dark);}
+      .btn-run[aria-expanded="true"]{background:var(--orange-dark);border-color:var(--orange-dark);}
+      .btn svg{flex:none;}
+      .chev{transition:transform .2s ease;}
+      [aria-expanded="true"] .chev{transform:rotate(180deg);}
+
+      /* ---------- Panels ---------- */
+      .panel{display:none;margin-top:14px;border-top:1px dashed var(--line);padding-top:13px;}
+      .panel.open{display:block;animation:fadein .18s ease;}
+      @keyframes fadein{from{opacity:0;transform:translateY(-3px);}to{opacity:1;transform:none;}}
+      @media (prefers-reduced-motion: reduce){
+        html{scroll-behavior:auto;}
+        .panel.open{animation:none;}
+        .how-pane.active{animation:none;}
+        .chev,.card{transition:none;}
+      }
+      .panel h3{
+        font-size:12px;font-weight:900;letter-spacing:.06em;color:var(--ink-3);
+        margin:0 0 8px;text-transform:none;
+      }
+      /* ---------- 簡易／詳細タブ ---------- */
+      .how-tabs{
+        display:flex;gap:4px;margin-bottom:13px;
+        background:var(--bg-soft);border-radius:10px;padding:4px;
+      }
+      .how-tab{
+        flex:1;appearance:none;border:0;background:transparent;cursor:pointer;
+        color:var(--ink-2);font:inherit;font-size:13.5px;font-weight:700;
+        border-radius:8px;padding:8px 10px;min-height:38px;
+      }
+      .how-tab:hover{color:var(--blue);}
+      .how-tab[aria-selected="true"]{
+        background:var(--card);color:var(--blue);
+        box-shadow:0 1px 3px rgba(22,45,90,.14);
+      }
+      .how-pane{display:none;}
+      .how-pane.active{display:block;animation:fadein .15s ease;}
+      .simple-p{margin:0 0 9px;font-size:13.5px;color:var(--ink-2);line-height:1.7;}
+      .simple-p:last-child{margin-bottom:0;}
+      .simple-p b{color:var(--ink);}
+      .detail-sec{margin-bottom:14px;}
+      .detail-sec:last-child{margin-bottom:0;}
+      .detail-sec h4{
+        font-size:13px;font-weight:900;color:var(--ink);
+        margin:0 0 7px;
+      }
+      .panel ul{margin:0;padding:0;list-style:none;display:grid;gap:7px;}
+      .panel ul li{
+        position:relative;padding-left:20px;font-size:13.5px;color:var(--ink-2);line-height:1.6;
+      }
+      .panel ul li::before{
+        content:"";position:absolute;left:2px;top:.52em;
+        width:7px;height:7px;border-radius:2px;background:var(--blue);
+      }
+      .panel ul li b{color:var(--ink);}
+      .need-list li::before{
+        content:"";left:0;top:.28em;width:13px;height:13px;border-radius:4px;
+        background:transparent;border:2px solid var(--orange);
+      }
+      .codebox{
+        background:var(--code-bg);border-radius:12px;padding:12px 12px 12px 14px;
+        display:flex;align-items:center;gap:10px;margin-bottom:12px;
+      }
+      .codebox code{
+        font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+        color:var(--code-ink);font-size:13.5px;line-height:1.55;overflow-wrap:anywhere;flex:1;
+      }
+      .copy-btn{
+        flex:none;appearance:none;cursor:pointer;font:inherit;font-weight:700;font-size:13px;
+        background:var(--orange);color:#fff;border:0;border-radius:9px;
+        padding:9px 13px;min-height:40px;display:inline-flex;align-items:center;gap:6px;
+      }
+      .copy-btn:hover{background:var(--orange-dark);}
+      .copy-btn.done{background:var(--ok);}
+      .after-note{
+        margin:10px 0 0;font-size:12.5px;color:var(--ink-3);line-height:1.6;
+        background:var(--bg-soft);border-radius:9px;padding:9px 11px;
+      }
+      .after-note b{color:var(--ink-2);}
+
+      .empty{
+        display:none;text-align:center;color:var(--ink-3);
+        padding:36px 16px;font-size:14px;
+      }
+      .empty.show{display:block;}
+      section.cat.hidden{display:none;}
+
+      footer{margin-top:44px;text-align:center;color:var(--ink-3);font-size:12.5px;line-height:1.7;}
+
+      /* ---------- Toast ---------- */
+      .toast{
+        position:fixed;left:50%;bottom:22px;transform:translate(-50%,16px);
+        background:var(--ink);color:var(--bg);
+        font-size:13.5px;font-weight:700;
+        padding:11px 18px;border-radius:999px;
+        opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;
+        z-index:50;box-shadow:0 12px 30px -8px rgba(0,0,0,.35);
+        max-width:calc(100vw - 32px);text-align:center;
+      }
+      .toast.show{opacity:1;transform:translate(-50%,0);}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <!-- 使い方の案内 -->
+      <div class="howto">
+        <h1>使いたいスキルを選んで、指示文をチャットへ</h1>
+        <p class="lead">このページは<strong>「選ぶ画面」</strong>です。実行はチャット側で行います。<strong>指示文をコピーしてチャットに送ると開始します。</strong></p>
+        <div class="steps">
+          <div class="step"><span class="num">1</span><p><b>スキルを選ぶ</b>カテゴリから目的のスキルを探します。「使い方」で流れを先に確認できます。</p></div>
+          <div class="step"><span class="num">2</span><p><b>「実行する」を開く</b>指示文と、最初に必要なもの・チェック項目が表示されます。</p></div>
+          <div class="step"><span class="num">3</span><p><b>コピーしてチャットへ送る</b>指示文をワンタップでコピーし、チャットの入力欄に貼って送信すれば開始です。</p></div>
+        </div>
+      </div>
+
+      <!-- 検索とカテゴリ -->
+      <div class="toolbar">
+        <label class="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg>
+          <input id="q" type="search" placeholder="スキル名・キーワードで探す（例：スライド、領収書）" aria-label="スキルを検索" />
+        </label>
+        <nav class="chips" aria-label="カテゴリへ移動" id="chips"></nav>
+      </div>
+
+      <p class="empty" id="empty">該当するスキルが見つかりませんでした。キーワードを変えてお試しください。</p>
+
+      <main id="sections"></main>
+
+      <footer>
+        全10本のカスタムスキル（GitHub公開済み・使い方シート付き）<br />
+        投稿・公開・アップロードを伴うスキルは、どれも下書きや設定の確認とOKの後だけ実行されます。
+      </footer>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      var CATS = [
+        { id:"login",   name:"ログイン",         note:"Googleログインの確立・確認", color:"#7A5AF8", icon:'<circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8 20 3"/><path d="M15.5 5.5l3 3"/><path d="M18 3l2 2"/>' },
+        { id:"slides",  name:"スライド作成",     note:"メモやスクショからGoogleスライドへ", color:"#2E6BE6", icon:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M12 16v3"/><path d="M8.5 21h7"/><path d="m10 8 5 2.5-5 2.5z" fill="currentColor" stroke="none"/>' },
+        { id:"upload",  name:"動画アップロード", note:"ドライブのmp4をYouTubeへ", color:"#E5484D", icon:'<path d="M12 16V5"/><path d="m7 9.5 5-5 5 5"/><path d="M4 20h16"/>' },
+        { id:"sns",     name:"SNS投稿",          note:"InstagramとThreadsの日次投稿", color:"#C2439B", icon:'<path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.6L3 21l1.9-5.6A8.5 8.5 0 1 1 21 11.5z"/>' },
+        { id:"minutes", name:"議事録・告知",     note:"AIアウトプット雑談会のDiscord投稿", color:"#0E9384", icon:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/>' },
+        { id:"books",   name:"経理・台帳",       note:"領収書をスプレッドシート台帳へ", color:"#E87A2E", icon:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h.01M15 8h.01M9 12h.01M15 12h.01M9 16h.01M15 16h.01"/>' }
+      ];
+
+      var SKILLS = [
+        {
+          cat:"login", no:"01",
+          name:"muse_login_google_account",
+          desc:"Museの内蔵ブラウザで、指定したGoogleアカウントにログインした状態を作って確認するスキル",
+          start:"チャットで「muse_login_google_account を使って」と言い、<b>ログインしたいGoogleアカウントを指定</b>します。ログイン操作は、開いた内蔵ブラウザを<b>本人が引き継いで</b>行います。",
+          detail:[
+            { h:"このスキルが要る理由", items:[
+              "内蔵ブラウザでGoogleのサービス（Gemini、YouTube Studio、Googleドライブなど）を使う作業は、ログイン済みであることが前提です。",
+              "ログイン状態は時間が経つと切れていることがあります。「前にログインしたから大丈夫」にはならないので、<b>使うたびの確認</b>が役目です。"
+            ]},
+            { h:"進め方", items:[
+              "チャットで「muse_login_google_account を使って」と言い、<b>対象のアカウントを指定</b>します（アカウント名はスキルには書かれていません。毎回、実行時に指定します）。",
+              "MuseがGoogleのサービスのページを開いて、<b>今のログイン状態を確認</b>します。",
+              "指定のアカウントでログイン済みなら、そのまま報告して終わります。",
+              "未ログイン、または別のアカウントの場合は、ブラウザがあなたに渡されるので、メールアドレス・パスワード・2段階認証を<b>自分で入力</b>します。",
+              "入力が終わったら「終わった」と伝えます。Museがページを読み直し、表示されているアカウント名とメールアドレスが指定通りか確認して報告します。"
+            ]},
+            { h:"注意点", items:[
+              "<b>パスワードや認証コードを、チャットで送る必要はありません。</b>入力は全部、ブラウザの中で自分で行います。",
+              "スマホに確認が出ることがあります。その承認は自分のスマホで行います。",
+              "別のアカウントでログイン済みのとき、Museが勝手にログアウトすることはありません。切り替えるかどうかを確認します。",
+              "対象は「既にあるアカウントへのログイン」です。Googleアカウントの新規作成は、このブラウザでは止められることがあるため対象外です。"
+            ]}
+          ],
+          needs:[
+            "ログインしたい<b>Googleアカウント</b>（実行時に指定）",
+            "ログイン操作は<b>本人がブラウザを引き継いで</b>行う"
+          ]
+        },
+        {
+          cat:"slides", no:"02",
+          name:"muse_make_slides_with_narration_from_texts_to_youtube",
+          desc:"殴り書きメモや会話ログから、YouTube動画用のスライド一式（構成・本文・ナレーション・画像・タイトル案）を作り、編集できる形でGoogleスライドに入れるスキル",
+          start:"元になる<b>殴り書きメモ・箇条書き（貼り付けやファイル）や会話ログ</b>を渡します。決め事の質問が最初にまとめて出るので、1回の返信で答えれば作成が進みます。",
+          detail:[
+            { h:"事前準備（最初に1回だけ）", items:[
+              "muse.ai のチャットで、<b>GoogleドライブとGoogleスライドを接続</b>する（未接続だと接続リンクが案内されます）。",
+              "画像をGeminiで作る場合は、内蔵ブラウザでGoogleにログインした状態が必要です（ログインが切れていたら、先にログインを確認します）。"
+            ]},
+            { h:"進め方", items:[
+              "素材を渡します。殴り書きメモ・箇条書き（貼り付けやファイル）、または会話ログファイルです。",
+              "<b>決め事の質問が、最初にまとめて出ます。</b>形式・長さ・画像の作り方・テイスト・どこまで自動で進めるか（チェックポイント）です。各質問には答え方と「答えなければこの内容で進みます」という既定が書かれているので、1回の返信でまとめて答えられます。既定は、言語は日本語、画面比は16:9、トーンはカジュアルで分かりやすく、対象は一般の初心者、画像のテイストはクールでかっこいい感じ、です。",
+              "画像のテイストは候補から選べます：1. クールでかっこいい（既定・おすすめ）／2. フラットで分かりやすい／3. 写真風／4. やさしい手書き風／5. ミニマル／6. マンガ風",
+              "構成案→本文→ナレーション→本文の画像、の順に作ります。チェックポイントで止めて確認することもできます。",
+              "最後に、全体を見渡してからサムネイルを作ります。",
+              "できあがったらGoogleスライドに入れ、枚数とテキストを読み戻して確認し、スライドのURLを報告します。"
+            ]},
+            { h:"実行すると起きること（成果物）", items:[
+              "動画ごとに作業フォルダが作られ、構成・スライド本文・ナレーション原稿が入ります。",
+              "サムネイルとスライド画像（サムネイルは、本文と画像が全部そろった最後に、全体を見て設計します。画像生成の指示文は英語で送りますが、画像の中のタイトル文字は日本語のままです）。",
+              "YouTubeのタイトル案・概要欄案・タグ案。",
+              "手動ステップの手順書（あなたが行う分）。"
+            ]},
+            { h:"あなたの手作業として残ること", items:[
+              "Googleスライドで内容を確認する。",
+              "Google Vidsへ変換し、ナレーション原稿どおりに音声を設定する。",
+              "YouTubeへ公開する。"
+            ]},
+            { h:"注意点", items:[
+              "スライドの見出し・本文・表は、画像にせず<b>編集できるテキストのまま</b>入れます。後から自分で直せます。",
+              "製品名・サービス名などの固有名詞は、あなたが書いた表記をそのまま使います。",
+              "会話ログに含まれるパスワードや個人情報は、成果物に入れません。"
+            ]}
+          ],
+          needs:[
+            "元になる<b>メモや会話ログ</b>",
+            "形式などの質問には<b>最初にまとめて</b>答える（既定値つきで出ます）"
+          ]
+        },
+        {
+          cat:"slides", no:"03",
+          name:"muse_make_slides_with_narration_from_screenshots_to_youtube",
+          desc:"手順のスクリーンショットや画面録画と一言メモから、ナレーション付きの手順スライドを作り、Googleスライドに入れるスキル",
+          start:"<b>スクショ（手順の順番が分かる並び）または画面録画の動画</b>と、「何の写真か」「目的は何か」「強調したい点」の<b>一言メモ</b>を渡します。構成案にOKを出すと作成が始まります。",
+          detail:[
+            { h:"事前準備（最初に1回だけ）", items:[
+              "muse.ai のチャットで、<b>GoogleドライブとGoogleスライドを接続</b>する（未接続だと接続リンクが案内されます）。"
+            ]},
+            { h:"進め方", items:[
+              "スクショ（手順の順番が分かる並び）または画面録画の動画を渡します。大きな動画はGoogleドライブのリンクで渡します。",
+              "一言メモを添えます。「何の写真か」「目的は何か」「強調したい点」の3つです。並び順・マスクの要否・生成する画像のテイストなど、必要な質問は最初にまとめて出ます。各質問には答え方と既定（答えなければこの内容で進みます）が書かれているので、1回の返信で済みます。",
+              "表紙などに使う生成画像のテイストは候補から選べます：1. クールでかっこいい（既定・おすすめ）／2. フラットで分かりやすい／3. 写真風／4. やさしい手書き風／5. ミニマル",
+              "構成案（表紙＋ステップ＋まとめ）が提示されるので、<b>OKを出してから作成が始まります</b>。",
+              "できあがったらGoogleスライドに入れ、枚数・画像・マスク・ノートを読み戻して確認し、スライドのURLを報告します。"
+            ]},
+            { h:"実行すると起きること", items:[
+              "スクショは<b>元の画像のまま</b>貼ります。動画の場合は、必要な場面をフレームとして切り出して使います。",
+              "表紙（サムネイル相当）は一番最後に仕上げます。全ページができてから全体を見て決めるので、内容に合った表紙になります。生成する画像の指示文は英語で送ります（画像の中の文字は日本語のままです）。",
+              "個人情報のマスクと、クリック場所の注釈（赤い楕円＋番号）は、スライド上の図形として上に載せます。後から自分でずらして直せます。",
+              "各ページのスピーカーノートに、そのページのナレーション原稿が入ります。そのままYouTube動画の読み上げに使えます。"
+            ]},
+            { h:"注意点", items:[
+              "元の画像ファイルは編集しません。マスクも注釈も、すべてスライド側の図形です。",
+              "実名・メールアドレスなどは原則マスクします（範囲は事前に確認します）。同じ情報が次の画面にも写っているケースは、特に念入りに確認します。",
+              "直しでデッキ全体を差し替えると、自分で調整した図形も上書きされます。その場合は事前に伝えます。",
+              "ノート無しでプレゼン資料として完結させたい場合は、姉妹スキル muse_make_slides_without_narration_from_screenshots を使います。"
+            ]}
+          ],
+          needs:[
+            "<b>スクリーンショット</b>（または画面録画の動画）。ファイル名／時刻順に並ぶもの",
+            "<b>一言メモ</b>：何の写真か／目的／強調したい点"
+          ]
+        },
+        {
+          cat:"slides", no:"04",
+          name:"muse_make_slides_without_narration_from_screenshots",
+          desc:"手順のスクリーンショットや画面録画から、スライドだけで内容が完結するプレゼン用の手順スライドを作り、Googleスライドに入れるスキル",
+          start:"<b>スクショ（手順の順番が分かる並び）または画面録画の動画</b>と、「何の写真か」「目的は何か」「強調したい点」の<b>一言メモ</b>を渡します。構成案にOKを出すと作成が始まります。",
+          detail:[
+            { h:"事前準備（最初に1回だけ）", items:[
+              "muse.ai のチャットで、<b>GoogleドライブとGoogleスライドを接続</b>する（未接続だと接続リンクが案内されます）。"
+            ]},
+            { h:"進め方", items:[
+              "スクショ（手順の順番が分かる並び）または画面録画の動画を渡します。大きな動画はGoogleドライブのリンクで渡します。",
+              "一言メモを添えます。「何の写真か」「目的は何か」「強調したい点」の3つです。並び順・マスクの要否・生成する画像のテイストなど、必要な質問は最初にまとめて出ます。各質問には答え方と既定（答えなければこの内容で進みます）が書かれているので、1回の返信で済みます。",
+              "表紙などに使う生成画像のテイストは候補から選べます：1. クールでかっこいい（既定・おすすめ）／2. フラットで分かりやすい／3. 写真風／4. やさしい手書き風／5. ミニマル",
+              "構成案（表紙＋ステップ＋まとめ）が提示されるので、<b>OKを出してから作成が始まります</b>。",
+              "できあがったらGoogleスライドに入れ、枚数・画像・マスクを読み戻して確認し（スピーカーノートが空であることも確かめます）、スライドのURLを報告します。"
+            ]},
+            { h:"姉妹スキルとの違い", items:[
+              "<b>このスキル</b>：スピーカーノートは無し。各ページでやる作業は、スクショの下に大きめの太字で書きます。発表の場で、観客がスライドだけ見て手順を追える形です。",
+              "<b>muse_make_slides_with_narration_from_screenshots_to_youtube</b>：各ページのノートにナレーション原稿が入る、YouTube動画向けの形です。"
+            ]},
+            { h:"実行すると起きること", items:[
+              "スクショは<b>元の画像のまま</b>貼ります。動画の場合は、必要な場面をフレームとして切り出して使います。",
+              "表紙は一番最後に仕上げます。全ページができてから全体を見て決めるので、内容に合った表紙になります。生成する画像の指示文は英語で送ります（画像の中の文字は日本語のままです）。",
+              "個人情報のマスクと、クリック場所の注釈（赤い楕円＋番号）は、スライド上の図形として上に載せます。後から自分でずらして直せます。"
+            ]},
+            { h:"注意点", items:[
+              "元の画像ファイルは編集しません。マスクも注釈も、すべてスライド側の図形です。",
+              "実名・メールアドレスなどは原則マスクします（範囲は事前に確認します）。",
+              "直しでデッキ全体を差し替えると、自分で調整した図形も上書きされます。その場合は事前に伝えます。"
+            ]}
+          ],
+          needs:[
+            "<b>スクリーンショット</b>（または画面録画の動画）。ファイル名／時刻順に並ぶもの",
+            "<b>一言メモ</b>：何の写真か／目的／強調したい点"
+          ]
+        },
+        {
+          cat:"upload", no:"05",
+          name:"muse_up_youtube_from_google_drive_mp4",
+          desc:"Googleドライブに置いたmp4を、自分の端末にダウンロードすることなく、設定を確認してからYouTubeにアップロードするスキル",
+          start:"ドライブのファイルへの<b>リンク、またはファイル名</b>と一緒に「YouTubeにアップして」と伝えます。タイトルと公開範囲が決まるまで、アップロードは始まりません。",
+          detail:[
+            { h:"事前準備（最初に1回だけ）", items:[
+              "muse.ai のチャットで、<b>Googleドライブを接続</b>する（未接続だと接続リンクが案内されます）。",
+              "内蔵ブラウザでの<b>YouTubeログインが別に必要</b>です（ドライブの接続とは別物で、初回は両方要ります）。ログインはブラウザの中で自分で行います。"
+            ]},
+            { h:"進め方", items:[
+              "ドライブのファイルへのリンク、またはファイル名と一緒に「YouTubeにアップして」と伝えます。",
+              "Museがファイルの作業用コピーを取得し、長さ・形式・サイズを確認します（<b>原本は変更しません</b>）。",
+              "アップロードの前に、設定をまとめて確認します：タイトル（必須。勝手には決めません）／公開範囲（必須。公開／限定公開／非公開、または予約公開）／投稿先チャンネル（既定、または指定）／子ども向けかどうか（必須）／説明文・サムネイル（任意）。",
+              "YouTube Studioでアップロードし、設定を入力します。",
+              "公開前に最終設定が提示されるので、<b>OKを出してから公開</b>されます。",
+              "動画のURLが報告されます。作業用コピーの削除は、希望した場合のみ行います。"
+            ]},
+            { h:"注意点", items:[
+              "タイトルと公開範囲が決まるまで、アップロードは始まりません。",
+              "設定はその回の確認どおりに使います。前の動画の設定は流用しません。",
+              "パスワードや認証コードをチャットで送る必要はありません。2段階認証はスマホで承認します。",
+              "大きなファイルはブラウザ経由だと時間がかかったり、途中で失敗したりする場合があります（その場合は代替案が提示されます）。"
+            ]}
+          ],
+          needs:[
+            "ドライブのファイル（<b>リンクまたはファイル名</b>）",
+            "<b>タイトルと公開範囲</b>（必須の確認事項）",
+            "投稿先チャンネル、子ども向けかどうか（確認されます）"
+          ]
+        },
+        {
+          cat:"sns", no:"06",
+          name:"muse_sns_daily_posting",
+          desc:"作り置きの素材ストックから、InstagramとThreadsの投稿を1サイクル分準備し、最終確認と明示のOKがあったときだけ公開するスキル",
+          start:"チャットで「muse_sns_daily_posting を使って」と言います。<b>初回だけ</b>、対象アカウント・素材の置き場所・投稿の順番・保存先フォルダの4つの設定を先に渡します。",
+          detail:[
+            { h:"事前準備（初回だけ）", items:[
+              "このスキルは、設定を持たない設計です。初回は、使う人の記録側から次の4つを受け取ります（スキル本体には書きません）：投稿先のInstagramとThreadsのアカウント／素材の置き場所（Googleドライブのフォルダ）／投稿の順番と、進捗の記録の置き場所／準備したファイルの保存先フォルダ。",
+              "2回目以降は、この受け取りは不要です。"
+            ]},
+            { h:"進め方", items:[
+              "チャットで「muse_sns_daily_posting を使って」と言います。",
+              "Museが両プラットフォームの実際の投稿済み状態を確認し、投稿順と進捗と照らして「次に投稿するペア」を決めます。今日分が公開済みなら、準備をせずに報告だけします。",
+              "素材を準備します（リールは100MB以内に圧縮し、カバー画像を用意。カルーセルは並びを揃えます）。",
+              "キャプションは過去投稿の型で作ります。Threadsの文面は素材ファイルの原文をそのまま使います。",
+              "最終確認として、投稿先・内容・圧縮結果・カバー画像・キャプション全文・Threads文全文が提示されます。",
+              "「両方投稿／Instagramだけ／Threadsだけ／まだ投稿しない」から選びます。OKが出た分だけ公開され、URL2つと一緒に結果が報告され、進捗が記録されます。"
+            ]},
+            { h:"注意点", items:[
+              "準備しただけでは公開されません。公開は必ず、<b>最終確認と明示のOKの後だけ</b>です。",
+              "投稿先は設定されたブランドアカウントのみです。個人アカウントには投稿しません。",
+              "Threadsの文は言い換え・短縮・装飾をしません。素材にない情報（ツール名・価格・収益など）は作りません。",
+              "同じものを二重に準備・公開しません。「次」は計画ではなく、実際の公開状態から決めます。",
+              "スケジュール（何時に呼ぶか）は、このスキルの外の話です。"
+            ]}
+          ],
+          needs:[
+            "<b>初回のみ</b>：対象アカウント・素材フォルダ・投稿順などの設定",
+            "公開は<b>下書きの確認とOKの後だけ</b>"
+          ]
+        },
+        {
+          cat:"minutes", no:"07",
+          name:"muse_make_gijiroku_ai-output",
+          desc:"AIアウトプット雑談会の議事内容から、短い議事録と超簡単な開催報告を作り、確認後にDiscordの2か所へ投稿するスキル",
+          start:"<b>今日の日付・来週の日付・今日の参加人数・新規参加人数</b>の4つと、議事内容の<b>文字起こし</b>、議事録に添える<b>画像1枚</b>を渡します。4つそろわないと始めません。",
+          detail:[
+            { h:"事前準備", items:[
+              "Discordへのログインを、内蔵ブラウザで事前に済ませておきます（投稿は、ログインした本人のアカウントで行います。WebhookやBotは使いません）。",
+              "投稿先のURLはスキルには書かれていません。使う人の記録側で持ちます。"
+            ]},
+            { h:"必要な入力（4つそろわないと始めません）", items:[
+              "今日の日付（開催日）",
+              "来週の日付（次回予定）",
+              "今日の参加人数",
+              "新規参加人数",
+              "あわせて、議事内容の文字起こしと、議事録に添える画像1枚（集合写真など）が必要です。入力が欠けている場合は、下書きも投稿もせず、不足分を伝えて止まります。"
+            ]},
+            { h:"進め方", items:[
+              "4つの入力と、文字起こし・画像を渡します。",
+              "Museが2つの下書きを作ります。新議事録：話題と結論だけに絞った短いもの。次回予定で締めます。超簡単議事録：『サークル開催報告』の定型フォーマットに同じ内容を入れたもの。",
+              "2つの文面が提示されるので、確認してOKまたは修正を伝えます。",
+              "OKの後、投稿されます。新議事録＋画像 → サークル内の『AIアウトプット雑談会』。超簡単議事録（文章のみ）→ サークルリーダー交流内の『サークル開催報告』。",
+              "両方の投稿が各投稿先に見えることが確認され、報告されます。"
+            ]},
+            { h:"注意点", items:[
+              "下書きの確認と本人のOKなしに、投稿はしません。",
+              "文字起こしにない事実・名前・数字・話題は作りません。",
+              "画像は新議事録の投稿にだけ付けます。超簡単議事録には付けません。",
+              "Discordの1通あたりの上限は2,000文字です。超える場合は文を切らずに連続投稿するか、ファイルとして添付します。"
+            ]}
+          ],
+          needs:[
+            "当日の<b>文字起こし</b>",
+            "<b>今日の日付</b>と<b>次回開催日</b>",
+            "<b>参加人数</b>と<b>新規参加者数</b>",
+            "投稿用の<b>画像</b>"
+          ]
+        },
+        {
+          cat:"minutes", no:"08",
+          name:"muse_announcement_ai_output_to_discord",
+          desc:"AIアウトプット雑談会の今週の告知文を例文どおりに作り、確認後にDiscordの『AIアウトプット雑談会』スレッドへ投稿するスキル",
+          start:"「今週の告知を投稿して」のように伝えるだけです。用意するものは<b>特になし</b>。告知の日付は自動で<b>「作成した週の土曜日」</b>になります。",
+          detail:[
+            { h:"事前準備", items:[
+              "Discordへのログインを、内蔵ブラウザで事前に済ませておきます（投稿は、ログインした本人のアカウントで行います。WebhookやBotは使いません）。",
+              "投稿先スレッドのURLはスキルには書かれていません。使う人の記録側で持ちます。"
+            ]},
+            { h:"進め方", items:[
+              "「今週の告知を投稿して」のように伝えます。",
+              "Museが対象の土曜日を決めます。毎週土曜朝8時の開催で、告知の日付は「作成した週の土曜日」です。月〜土に作ればその週の土曜日、日曜に作れば翌週の土曜日になります。投稿済みの日付でも、そのまま作れます。",
+              "告知文の下書きが提示されます（文面は毎回、例文の雰囲気で新しく書かれていて、日付は対象の土曜日です）。",
+              "日付と文面を確認して、OKまたは修正を伝えます。",
+              "OKの後、『AIアウトプット雑談会』スレッドへ投稿され、表示が確認されて報告されます。"
+            ]},
+            { h:"注意点", items:[
+              "下書きの確認と本人のOKなしに、投稿はしません。",
+              "「参加はこちらから」のZoom URL・ミーティングID・パスコードは、<b>絶対に変えません</b>。そのままコピーして使います。",
+              "固定なのはZoomの参加ブロックだけで、それ以外の文面は毎回書き換わります（例文は構成と雰囲気の参考です）。",
+              "同じ日付の告知が投稿済みでも、構わず投稿できます（テストで投稿することもあるためです）。",
+              "例文にない新しい内容は足しません。"
+            ]}
+          ],
+          needs:[
+            "<b>特になし</b>（日付は自動で「作成した週の土曜日」）",
+            "投稿は<b>下書きの確認とOKの後</b>"
+          ]
+        },
+        {
+          cat:"books", no:"09",
+          name:"muse_receipt_pdf_to_sheets",
+          desc:"Googleドライブのフォルダに領収書のPDFや写真を入れておけば、Museが読み取って、確定申告用のスプレッドシート台帳に整理してくれるスキル",
+          start:"領収書のPDFや画像を<b>「領収書整理_実行前」</b>フォルダに入れて、チャットで「実行前に領収書を入れたので整理して」のように言います。終わったら報告が返ってきます。",
+          detail:[
+            { h:"URLの表記について", items:[
+              "使い方だけ知りたい場合の説明では、URLの場所には「ここに実際のURLが入ります」と書かれます。実際に使う場合は、Googleドライブとスプレッドシートに接続してから、実際のURL3つ（実行前フォルダ・実行後フォルダ・台帳）と一緒に説明します。"
+            ]},
+            { h:"事前準備（最初に1回だけ）", items:[
+              "muse.ai のチャットで、<b>GoogleドライブとGoogleスプレッドシートを接続</b>する（未接続だと接続リンクが案内されます）。",
+              "接続と初回の準備が終わると、実際に使うURLが3つ（実行前フォルダ・実行後フォルダ・台帳）案内されます。普段の作業は、そのURLを開いて領収書を入れるところから始まります。"
+            ]},
+            { h:"フォルダと台帳について", items:[
+              "領収書を入れる「領収書整理_実行前」と、処理済みを移す「領収書整理_実行後」というフォルダを使います。無ければ初回に自動で作られます。",
+              "台帳は「領収書整理2026」のような名前のスプレッドシートで、無ければ初回に形式ごと作られます（シートは「領収書一覧」「集計」「項目の説明」の3枚）。",
+              "フォルダも台帳も、スキルは「名前」で探します。IDのような固有の情報はスキルには書かれていないので、そのまま他人に渡せます。"
+            ]},
+            { h:"進め方（3ステップ）", items:[
+              "領収書のPDFや画像を「領収書整理_実行前」フォルダに入れる。",
+              "チャットで「muse_receipt_pdf_to_sheets を使って」「実行前に領収書を入れたので整理して」のように言う。",
+              "終わったら報告が返ってくるので、内容を確認する。"
+            ]},
+            { h:"実行すると起きること", items:[
+              "領収書を1枚ずつ読み取り（手書きも対象）、台帳に日付順で追記します。",
+              "同じ領収書のPDFと写真は、重複として1件に統合されます。見本・サンプルの画像は台帳に入りません。",
+              "読み取れない部分や判断できないものは推測せず、「要確認」として報告に残ります。",
+              "台帳への記入と確認が終わってから、処理済みファイルが「領収書整理_実行後」へ移動します。"
+            ]},
+            { h:"注意点", items:[
+              "勘定科目は提案です。事業用か私用か分からないものには（仮）が付くので、最後は自分で確認してください。",
+              "税務の判断はしません。期限を過ぎた年分の扱いなどは、税務署や税理士に確認してください。",
+              "台帳は年分ごとに分けるのがおすすめです（2024年の領収書は2024年分の台帳へ）。",
+              "フォルダを他の人と共有して使う場合、閲覧だけの権限だとファイルの移動ができません。移動まで任せたいときは、自分がオーナーのフォルダを用意してください。"
+            ]}
+          ],
+          needs:[
+            "「<b>領収書整理_実行前</b>」フォルダに領収書PDF・写真を入れておくこと"
+          ]
+        },
+        {
+          cat:"books", no:"10",
+          name:"muse_medical_expenses_to_sheets",
+          desc:"病院や薬局の領収書と、通院にかかった交通費のメモを集めて、医療費控除のための台帳に整理してくれるスキル",
+          start:"病院・薬局の領収書を<b>「医療費整理_実行前」</b>フォルダに入れます。通院の交通費は領収書がなくても<b>メモで可</b>です（例：「今日、○○病院、電車で美原駅→なんば駅、往復640円」）。あとはチャットで整理を頼みます。",
+          detail:[
+            { h:"URLの表記について", items:[
+              "使い方だけ知りたい場合の説明では、URLの場所には「ここに実際のURLが入ります」と書かれます。実際に使う場合は、Googleドライブとスプレッドシートに接続してから、実際のURL3つ（実行前フォルダ・実行後フォルダ・台帳）と一緒に説明します。"
+            ]},
+            { h:"事前準備（最初に1回だけ）", items:[
+              "muse.ai のチャットで、<b>GoogleドライブとGoogleスプレッドシートを接続</b>する（未接続だと接続リンクが案内されます）。",
+              "接続と初回の準備が終わると、実際に使うURLが3つ（実行前フォルダ・実行後フォルダ・台帳）案内されます。普段の作業は、そのURLを開いて領収書を入れるところから始まります。"
+            ]},
+            { h:"フォルダと台帳について", items:[
+              "領収書を入れる「医療費整理_実行前」と、処理済みを移す「医療費整理_実行後」というフォルダを使います。無ければ初回に自動で作られます。",
+              "台帳は「医療費台帳2026」のような名前のスプレッドシートで、無ければ初回に形式ごと作られます（シートは「医療費一覧」「通院交通費メモ」「集計」の3枚）。",
+              "フォルダも台帳も、スキルは「名前」で探します。IDのような固有の情報はスキルには書かれていないので、そのまま他人に渡せます。"
+            ]},
+            { h:"進め方", items:[
+              "病院・薬局の領収書のPDFや画像を「医療費整理_実行前」フォルダに入れる。",
+              "通院の交通費は、領収書がなくてもメモで残せます。チャットで一言送るだけです。例：「今日、○○病院、電車で美原駅→なんば駅、往復640円」（日付・受診した人・病院・交通手段・出発駅→到着駅・片道か往復か・金額が揃っていること）。",
+              "チャットで「muse_medical_expenses_to_sheets を使って」「実行前に領収書を入れたので整理して」のように言う。",
+              "終わったら報告が返ってくるので、内容を確認する。"
+            ]},
+            { h:"実行すると起きること", items:[
+              "領収書を1枚ずつ読み取り（手書きも対象）、交通費メモと合わせて、台帳に日付順で追記します。",
+              "同じ領収書のPDFと写真は、重複として1件に統合されます。見本・サンプルの画像は台帳に入りません。",
+              "読み取れない部分や判断できないものは推測せず、「要確認」として報告に残ります。",
+              "薬局の★印商品は、セルフメディケーション税制の候補として別枠で集計されます。",
+              "台帳への記入と確認が終わってから、処理済みファイルが「医療費整理_実行後」へ移動します。"
+            ]},
+            { h:"注意点", items:[
+              "勘定科目ではなく「区分」の提案です。受診した人が領収書から分からないものは空欄＋要確認になります。",
+              "タクシー代は原則対象外です。ケガや急病などで公共交通機関を使えなかった場合だけ候補になるので、理由のメモが必須です。理由がないタクシーは台帳に入りません。",
+              "自家用車のガソリン代・駐車場代は対象外です。",
+              "保険金や高額療養費で戻ってきた分は、後から「補填される金額」に入れて差し引きます。",
+              "医療費控除とセルフメディケーション税制は、どちらか一方を選ぶものです（併用できません）。",
+              "税務の判断はしません。対象かどうか際どいものは「要確認」として残すので、税務署や税理士に確認してください。",
+              "領収書の紙の原本は、申告後も5年間、自宅で保管が必要です。ドライブのスキャンは整理用で、原本の代わりにはなりません。",
+              "台帳は年ごとに分けるのがおすすめです。",
+              "フォルダを他の人と共有して使う場合、閲覧だけの権限だとファイルの移動ができません。移動まで任せたいときは、自分がオーナーのフォルダを用意してください。"
+            ]}
+          ],
+          needs:[
+            "「<b>医療費整理_実行前</b>」に領収書を入れる",
+            "または<b>交通費メモ</b>（日付・受診した人・病院・交通手段・出発駅→到着駅・片道/往復・金額）"
+          ]
+        }
+      ];
+
+      var sectionsEl = document.getElementById("sections");
+      var chipsEl = document.getElementById("chips");
+
+      function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+
+      function prettyName(name){
+        // スキル名の接頭辞 muse_ を青く見せる
+        if(name.indexOf("muse_")===0){ return '<span class="pre">muse_</span>' + esc(name.slice(5)).replace(/_/g,"_<wbr>"); }
+        return esc(name).replace(/_/g,"_<wbr>");
+      }
+
+      function iconSvg(cat){
+        return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + cat.icon + '</svg>';
+      }
+      var chevSvg = '<svg class="chev" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+      var bookSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>';
+      var playSvg = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.8v14.4c0 .9 1 1.5 1.8 1L20 13a1.2 1.2 0 0 0 0-2L8.8 3.9C8 3.4 7 3.9 7 4.8z"/></svg>';
+      var copySvg = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+
+      // カテゴリチップ
+      CATS.forEach(function(cat){
+        var n = SKILLS.filter(function(s){return s.cat===cat.id;}).length;
+        var a = document.createElement("a");
+        a.className = "chip"; a.href = "#cat-" + cat.id;
+        a.innerHTML = esc(cat.name) + '<span class="cnt">' + n + '</span>';
+        chipsEl.appendChild(a);
+      });
+
+      // セクションとカードを生成
+      CATS.forEach(function(cat){
+        var sec = document.createElement("section");
+        sec.className = "cat"; sec.id = "cat-" + cat.id;
+        sec.setAttribute("data-cat", cat.id);
+
+        var list = SKILLS.filter(function(s){return s.cat===cat.id;});
+        var html = '<div class="cat-head">'
+          + '<span class="cat-ico" style="background:' + cat.color + '">' + iconSvg(cat) + '</span>'
+          + '<div><h2>' + esc(cat.name) + '</h2><p class="cat-note">' + esc(cat.note) + '</p></div>'
+          + '<span class="spacer"></span><span class="cat-count">' + list.length + ' 本</span></div>'
+          + '<div class="grid">';
+
+        list.forEach(function(s){
+          var cmd = s.name + " を実行して";
+          html += '<article class="card" data-search="' + esc((s.name + " " + s.desc + " " + cat.name).toLowerCase()) + '">'
+            + '<span class="no">SKILL ' + s.no + '</span>'
+            + '<div class="skill-name">' + prettyName(s.name) + '</div>'
+            + '<p class="desc">' + esc(s.desc) + '</p>'
+            + '<div class="actions">'
+            +   '<button type="button" class="btn btn-how" aria-expanded="false" data-panel="how">' + bookSvg + '使い方' + chevSvg + '</button>'
+            +   '<button type="button" class="btn btn-run" aria-expanded="false" data-panel="run">' + playSvg + '実行する' + chevSvg + '</button>'
+            + '</div>'
+            + '<div class="panel panel-how">'
+            +   '<div class="how-tabs" role="tablist" aria-label="説明の切り替え">'
+            +     '<button type="button" class="how-tab" role="tab" aria-selected="true" data-howtab="simple">簡易説明</button>'
+            +     '<button type="button" class="how-tab" role="tab" aria-selected="false" data-howtab="detail">詳細説明</button>'
+            +   '</div>'
+            +   '<div class="how-pane how-pane-simple active">'
+            +     '<p class="simple-p">' + esc(s.desc) + '</p>'
+            +     '<p class="simple-p"><b>始め方：</b>' + s.start + '</p>'
+            +   '</div>'
+            +   '<div class="how-pane how-pane-detail">'
+            +     s.detail.map(function(sec){
+                  return '<div class="detail-sec"><h4>' + esc(sec.h) + '</h4><ul>'
+                    + sec.items.map(function(it){ return "<li>" + it + "</li>"; }).join("")
+                    + '</ul></div>';
+                }).join("")
+            +   '</div>'
+            + '</div>'
+            + '<div class="panel panel-run"><h3>実行用の指示文</h3>'
+            +   '<div class="codebox"><code>' + esc(cmd) + '</code>'
+            +   '<button type="button" class="copy-btn" data-cmd="' + esc(cmd) + '">' + copySvg + 'コピー</button></div>'
+            +   '<h3>最初に必要なもの・チェック項目</h3><ul class="need-list">'
+            +   s.needs.map(function(n){ return "<li>" + n + "</li>"; }).join("")
+            +   '</ul>'
+            +   '<p class="after-note">コピーしたら<b>チャットの入力欄に貼って送信</b>してください。必要なものは、そのときに一緒に送っても、開始後の質問に答えても大丈夫です。</p>'
+            + '</div>'
+            + '</article>';
+        });
+
+        html += '</div>';
+        sec.innerHTML = html;
+        sectionsEl.appendChild(sec);
+      });
+
+      // パネルの開閉（カード内では片方だけ開く）
+      sectionsEl.addEventListener("click", function(e){
+        var tab = e.target.closest("button[data-howtab]");
+        if(tab){
+          var tcard = tab.closest(".card");
+          var kind = tab.getAttribute("data-howtab");
+          tcard.querySelectorAll("button[data-howtab]").forEach(function(t){ t.setAttribute("aria-selected", t===tab ? "true" : "false"); });
+          tcard.querySelectorAll(".how-pane").forEach(function(p){ p.classList.remove("active"); });
+          tcard.querySelector(".how-pane-" + kind).classList.add("active");
+          return;
+        }
+        var btn = e.target.closest("button[data-panel]");
+        if(btn){
+          var card = btn.closest(".card");
+          var target = card.querySelector(".panel-" + btn.getAttribute("data-panel"));
+          var willOpen = !target.classList.contains("open");
+          card.querySelectorAll(".panel").forEach(function(p){ p.classList.remove("open"); });
+          card.querySelectorAll("button[data-panel]").forEach(function(b){ b.setAttribute("aria-expanded","false"); });
+          if(willOpen){
+            target.classList.add("open");
+            btn.setAttribute("aria-expanded","true");
+          }
+          return;
+        }
+        var copyBtn = e.target.closest(".copy-btn");
+        if(copyBtn){ copyCommand(copyBtn); }
+      });
+
+      // コピー
+      var toast = document.getElementById("toast");
+      var toastTimer = null;
+      function showToast(msg){
+        toast.textContent = msg;
+        toast.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function(){ toast.classList.remove("show"); }, 2400);
+      }
+      function copyCommand(btn){
+        var text = btn.getAttribute("data-cmd");
+        function done(){
+          btn.classList.add("done");
+          var old = btn.innerHTML;
+          btn.innerHTML = "コピーしました";
+          showToast("指示文をコピーしました。チャットに貼って送ってください。");
+          setTimeout(function(){ btn.classList.remove("done"); btn.innerHTML = old; }, 2200);
+        }
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text, done); });
+        } else {
+          fallbackCopy(text, done);
+        }
+      }
+      function fallbackCopy(text, done){
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand("copy"); done(); }
+        catch(err){ showToast("コピーできませんでした。指示文を長押しで選択してください。"); }
+        document.body.removeChild(ta);
+      }
+
+      // 検索フィルタ
+      var q = document.getElementById("q");
+      var empty = document.getElementById("empty");
+      q.addEventListener("input", function(){
+        var word = q.value.trim().toLowerCase();
+        var anyVisible = false;
+        document.querySelectorAll("section.cat").forEach(function(sec){
+          var secVisible = false;
+          sec.querySelectorAll(".card").forEach(function(card){
+            var hit = !word || card.getAttribute("data-search").indexOf(word) !== -1;
+            card.style.display = hit ? "" : "none";
+            if(hit){ secVisible = true; anyVisible = true; }
+          });
+          sec.classList.toggle("hidden", !secVisible);
+        });
+        empty.classList.toggle("show", !anyVisible);
+      });
+    </script>
+  </body>
+</html>
