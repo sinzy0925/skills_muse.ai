@@ -262,6 +262,33 @@
       }
       .after-note b{color:var(--ink-2);}
 
+      /* ---------- 編集ボックス（テキスト版スライド用） ---------- */
+      .composer{
+        margin:0 0 14px;background:var(--blue-tint);
+        border-radius:12px;padding:12px;
+      }
+      .composer h3{color:var(--ink-2);}
+      .composer-note{margin:0 0 9px;font-size:12.5px;color:var(--ink-2);line-height:1.6;}
+      .composer-note b{color:var(--ink);}
+      .composer-box{
+        width:100%;display:block;resize:vertical;min-height:110px;
+        font:inherit;font-size:14px;line-height:1.7;color:var(--ink);
+        background:var(--card);border:1.5px solid var(--blue);border-radius:10px;
+        padding:10px 12px;outline:none;
+      }
+      .composer-box:focus{
+        border-color:var(--blue-dark);
+        box-shadow:0 0 0 3px color-mix(in srgb, var(--blue) 22%, transparent);
+      }
+      .composer-actions{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap;}
+      .composer-copy{flex:1;}
+      .btn-reset{
+        appearance:none;cursor:pointer;font:inherit;font-weight:700;font-size:13px;
+        background:transparent;color:var(--ink-2);border:1.5px solid var(--line);border-radius:9px;
+        padding:9px 13px;min-height:40px;display:inline-flex;align-items:center;gap:6px;
+      }
+      .btn-reset:hover{border-color:var(--ink-3);color:var(--ink);}
+
       .empty{
         display:none;text-align:center;color:var(--ink-3);
         padding:36px 16px;font-size:14px;
@@ -737,6 +764,9 @@
         "muse_medical_expenses_to_sheets": "「医療費整理_実行前」フォルダに領収書を入れたので、以下のスキルを実行して\nmuse_medical_expenses_to_sheets\n\n通院交通費のメモがあれば、以下に書いてください\n[例：11月12日、○○病院、電車で○○駅→○○駅、往復○○円]"
       };
 
+      // 編集ボックスの初期文（テキスト版スライド専用）
+      var COMPOSER_DEFAULT = "[]\n上記文章から以下のスキルを実行して\nmuse_make_slides_with_narration_from_texts_to_youtube";
+
       var sectionsEl = document.getElementById("sections");
       var chipsEl = document.getElementById("chips");
 
@@ -813,10 +843,21 @@
                 ? '<div class="panel panel-run"><h3>実行用のテンプレート</h3>'
                   + '<div class="codebox"><code>' + esc(TEMPLATES[s.name]) + '</code>'
                   + '<button type="button" class="copy-btn" data-copycode="1">' + copySvg + 'コピー</button></div>'
+                  + (s.name === "muse_make_slides_with_narration_from_texts_to_youtube"
+                      ? '<div class="composer"><h3>編集ボックス（その場で書いてコピー）</h3>'
+                        + '<p class="composer-note">メモ帳に移さなくて大丈夫です。下の箱は<b>そのまま編集できます</b>。<b>[ ]</b> の中に元になる文章を入れて（長文のときは [ ] を消して貼り付けてもOKです）、「編集した文をコピー」を押せば、そのままチャットに貼れます。</p>'
+                        + '<textarea class="composer-box" rows="5" aria-label="実行文の編集ボックス">' + esc(COMPOSER_DEFAULT) + '</textarea>'
+                        + '<div class="composer-actions">'
+                        + '<button type="button" class="copy-btn composer-copy">' + copySvg + '編集した文をコピー</button>'
+                        + '<button type="button" class="btn-reset composer-reset">元に戻す</button>'
+                        + '</div></div>'
+                      : '')
                   + '<h3>最初に必要なもの・チェック項目</h3><ul class="need-list">'
                   + s.needs.map(function(n){ return "<li>" + n + "</li>"; }).join("")
                   + '</ul>'
-                  + '<p class="after-note">コピーして<b>チャットに貼り、[ ]の部分を書き換えてから</b>送ってください。</p>'
+                  + (s.name === "muse_make_slides_with_narration_from_texts_to_youtube"
+                      ? '<p class="after-note">上のテンプレートは見本です。実際に送るときは<b>編集ボックスで書き換えた文をコピー</b>して、チャットに貼って送ってください。</p>'
+                      : '<p class="after-note">コピーして<b>チャットに貼り、[ ]の部分を書き換えてから</b>送ってください。</p>')
                   + '</div>'
                 : '<div class="panel panel-run"><h3>実行用の指示文</h3>'
                   + '<div class="codebox"><code>' + esc(cmd) + '</code>'
@@ -858,9 +899,56 @@
           }
           return;
         }
+        var compCopy = e.target.closest(".composer-copy");
+        if(compCopy){
+          var compCard = compCopy.closest(".card");
+          var compTa = compCard ? compCard.querySelector(".composer-box") : null;
+          copyComposer(compCopy, compTa ? compTa.value : "");
+          return;
+        }
+        var compReset = e.target.closest(".composer-reset");
+        if(compReset){
+          var resetCard = compReset.closest(".card");
+          var resetTa = resetCard ? resetCard.querySelector(".composer-box") : null;
+          if(resetTa){
+            resetTa.value = COMPOSER_DEFAULT;
+            autoGrow(resetTa);
+            resetTa.focus();
+          }
+          showToast("編集ボックスを元に戻しました。");
+          return;
+        }
         var copyBtn = e.target.closest(".copy-btn");
         if(copyBtn){ copyCommand(copyBtn); }
       });
+
+      // 編集ボックス：入力に合わせて高さを伸ばす／開いた直後は [ ] の中へカーソルを置く
+      sectionsEl.addEventListener("input", function(e){
+        if(e.target.classList && e.target.classList.contains("composer-box")){ autoGrow(e.target); }
+      });
+      sectionsEl.addEventListener("focusin", function(e){
+        if(e.target.classList && e.target.classList.contains("composer-box") && e.target.value === COMPOSER_DEFAULT){
+          e.target.setSelectionRange(1, 1);
+        }
+      });
+      function autoGrow(ta){
+        ta.style.height = "auto";
+        ta.style.height = Math.min(ta.scrollHeight + 2, 420) + "px";
+      }
+      function copyComposer(btn, text){
+        function done(){
+          btn.classList.add("done");
+          var old = btn.innerHTML;
+          btn.innerHTML = "コピーしました";
+          showToast("編集した文をコピーしました。チャットに貼って送ってください。");
+          setTimeout(function(){ btn.classList.remove("done"); btn.innerHTML = old; }, 2200);
+        }
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text, done); });
+        } else {
+          fallbackCopy(text, done);
+        }
+      }
 
       // コピー
       var toast = document.getElementById("toast");
