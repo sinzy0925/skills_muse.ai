@@ -827,8 +827,9 @@
           var isComposer = !!COMPOSER_SKILLS[s.name];
           var composerText = isComposer ? composerTextFor(s.name) : "";
           var composerRows = composerText ? Math.min(Math.max(composerText.split("\n").length, 5), 14) : 5;
-          var composerNote = s.name === "muse_make_slides_with_narration_from_texts_to_youtube"
-            ? 'メモ帳に移さなくて大丈夫です。下の箱は<b>そのまま編集できます</b>。<b>[ ]</b> の中に元になる文章を入れて（長文のときは [ ] を消して貼り付けてもOKです）、「編集した文をコピーして、チャットに貼り付け」を押せば、そのままチャットに貼れます。'
+          var isTexts = s.name === "muse_make_slides_with_narration_from_texts_to_youtube";
+          var composerNote = isTexts
+            ? 'メモ帳に移さなくて大丈夫です。下の箱は<b>そのまま編集できます</b>。<b>[ ]</b> の中に元になる文章を入れて（長文のときは [ ] を消して貼り付けてもOKです）、「編集した文をコピーして、チャットを開く」を押すと、<b>1タップでコピーとチャットを開くところまで</b>進みます。あとは開いたチャットに<b>貼り付けて送るだけ</b>です。'
             : 'メモ帳に移さなくて大丈夫です。下の箱は<b>そのまま編集できます</b>。<b>[ ]</b> の部分を書き換えて、「編集した文をコピーして、チャットに貼り付け」を押せば、そのままチャットに貼れます。';
           html += '<article class="card" data-search="' + esc((s.name + " " + s.desc + " " + cat.name).toLowerCase()) + '">'
             + '<span class="no">SKILL ' + s.no + '</span>'
@@ -867,19 +868,25 @@
                         + '<div class="codebox"><code>' + esc(TEMPLATES[s.name]) + '</code>'
                         + '<button type="button" class="copy-btn" data-copycode="1">' + copySvg + 'コピー</button></div>')
                   + (isComposer
-                      ? '<div class="composer"><h3>編集ボックス（その場で書いてコピー）</h3>'
+                      ? '<div class="composer"><h3>' + (isTexts ? '編集ボックス（書いて、1タップでチャットへ）' : '編集ボックス（その場で書いてコピー）') + '</h3>'
                         + '<p class="composer-note">' + composerNote + '</p>'
                         + '<textarea class="composer-box" rows="' + composerRows + '" aria-label="実行文の編集ボックス">' + esc(composerText) + '</textarea>'
                         + '<div class="composer-actions">'
-                        + '<button type="button" class="copy-btn composer-copy">' + copySvg + '編集した文をコピーして、チャットに貼り付け</button>'
+                        + (isTexts
+                            ? '<button type="button" class="copy-btn composer-copy" data-open-chat="1">' + copySvg + '編集した文をコピーして、チャットを開く</button>'
+                            : '<button type="button" class="copy-btn composer-copy">' + copySvg + '編集した文をコピーして、チャットに貼り付け</button>')
                         + '<button type="button" class="btn-reset composer-reset">元に戻す</button>'
-                        + '</div></div>'
+                        + '</div>'
+                        + (isTexts ? '<p class="composer-open-fallback" hidden style="margin:9px 0 0;font-size:12.5px;line-height:1.6;">コピーはできました。チャットが自動で開かなかったときは、こちらから開いて貼り付けてください：<a href="https://muse.ai/" target="_blank" rel="noopener" style="font-weight:700;">チャットを開く</a></p>' : '')
+                        + '</div>'
                       : '')
                   + '<h3>最初に必要なもの・チェック項目</h3><ul class="need-list">'
                   + s.needs.map(function(n){ return "<li>" + n + "</li>"; }).join("")
                   + '</ul>'
                   + (isComposer
-                      ? '<p class="after-note"><b>編集ボックスで書き換えた文をコピー</b>して、チャットに貼って送ってください。</p>'
+                      ? (isTexts
+                          ? '<p class="after-note">ボタンを押すと<b>コピーとチャットを開くところまで自動</b>です。開いたチャットの入力欄に<b>貼り付けて送信</b>してください。</p>'
+                          : '<p class="after-note"><b>編集ボックスで書き換えた文をコピー</b>して、チャットに貼って送ってください。</p>')
                       : '<p class="after-note">コピーして<b>チャットに貼り、[ ]の部分を書き換えてから</b>送ってください。</p>')
                   + '</div>'
                 : '<div class="panel panel-run"><h3>実行用の指示文</h3>'
@@ -926,7 +933,12 @@
         if(compCopy){
           var compCard = compCopy.closest(".card");
           var compTa = compCard ? compCard.querySelector(".composer-box") : null;
-          copyComposer(compCopy, compTa ? compTa.value : "");
+          var compText = compTa ? compTa.value : "";
+          if(compCopy.getAttribute("data-open-chat") === "1"){
+            copyAndOpenChat(compCopy, compText, compCard);
+          } else {
+            copyComposer(compCopy, compText);
+          }
           return;
         }
         var compReset = e.target.closest(".composer-reset");
@@ -982,6 +994,63 @@
           navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text, done); });
         } else {
           fallbackCopy(text, done);
+        }
+      }
+
+      // textsスキル専用：1タップで「コピー」＋「チャットを開く」
+      var CHAT_URL = "https://muse.ai/";
+      function trySyncCopy(text){
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed"; ta.style.top = "0"; ta.style.left = "0"; ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.focus(); ta.select();
+        var ok = false;
+        try { ok = document.execCommand("copy"); } catch(err){ ok = false; }
+        document.body.removeChild(ta);
+        return ok;
+      }
+      function openChatWindow(){
+        var win = null;
+        try { win = window.open(CHAT_URL, "_blank", "noopener"); } catch(err){ win = null; }
+        if(win){ return true; }
+        // window.open が塞がれた場合の予備：アンカーのクリックで開く
+        try {
+          var a = document.createElement("a");
+          a.href = CHAT_URL; a.target = "_blank"; a.rel = "noopener";
+          a.style.display = "none";
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          return true;
+        } catch(err){ return false; }
+      }
+      function copyAndOpenChat(btn, text, card){
+        var fallbackEl = card ? card.querySelector(".composer-open-fallback") : null;
+        function done(opened){
+          btn.classList.add("done");
+          var old = btn.innerHTML;
+          btn.innerHTML = opened ? "コピーしてチャットを開きました" : "コピーしました";
+          showToast(opened ? "コピーしてチャットを開きました。チャットに貼り付けて送ってください。" : "コピーしました。下の「チャットを開く」から開いて貼り付けてください。");
+          if(!opened && fallbackEl){ fallbackEl.hidden = false; }
+          setTimeout(function(){ btn.classList.remove("done"); btn.innerHTML = old; }, 2600);
+        }
+        // ポップアップブロックを避けるため、まず同期コピーを試し、同じタップの中でチャットを開く
+        if(trySyncCopy(text)){
+          done(openChatWindow());
+          return;
+        }
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(function(){ done(openChatWindow()); }, function(){
+            // 最後の手段：同期コピーを再試行してから開く
+            if(trySyncCopy(text)){ done(openChatWindow()); }
+            else {
+              if(fallbackEl){ fallbackEl.hidden = false; }
+              showToast("コピーできませんでした。編集ボックスの文を長押しで選択してコピーしてください。");
+            }
+          });
+        } else {
+          if(fallbackEl){ fallbackEl.hidden = false; }
+          showToast("コピーできませんでした。編集ボックスの文を長押しで選択してコピーしてください。");
         }
       }
 
