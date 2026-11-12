@@ -262,7 +262,7 @@
       }
       .after-note b{color:var(--ink-2);}
 
-      /* ---------- 編集ボックス（テキスト版スライド用） ---------- */
+      /* ---------- 編集ボックス（その場で書いてコピー） ---------- */
       .composer{
         margin:0 0 14px;background:var(--blue-tint);
         border-radius:12px;padding:12px;
@@ -767,6 +767,20 @@
       // 編集ボックスの初期文（テキスト版スライド専用）
       var COMPOSER_DEFAULT = "[]\n上記文章から以下のスキルを実行して\nmuse_make_slides_with_narration_from_texts_to_youtube";
 
+      // 編集ボックス方式にするスキル（テンプレート枠は出さず、編集ボックスだけ表示）
+      var COMPOSER_SKILLS = {
+        "muse_make_slides_with_narration_from_texts_to_youtube": true,
+        "muse_make_slides_with_narration_from_screenshots_to_youtube": true,
+        "muse_make_slides_without_narration_from_screenshots": true,
+        "muse_up_youtube_from_google_drive_mp4": true,
+        "muse_make_gijiroku_ai-output": true,
+        "muse_medical_expenses_to_sheets": true
+      };
+      function composerTextFor(name){
+        if(name === "muse_make_slides_with_narration_from_texts_to_youtube"){ return COMPOSER_DEFAULT; }
+        return TEMPLATES[name] || "";
+      }
+
       var sectionsEl = document.getElementById("sections");
       var chipsEl = document.getElementById("chips");
 
@@ -810,6 +824,12 @@
 
         list.forEach(function(s){
           var cmd = s.name + " を実行して";
+          var isComposer = !!COMPOSER_SKILLS[s.name];
+          var composerText = isComposer ? composerTextFor(s.name) : "";
+          var composerRows = composerText ? Math.min(Math.max(composerText.split("\n").length, 5), 14) : 5;
+          var composerNote = s.name === "muse_make_slides_with_narration_from_texts_to_youtube"
+            ? 'メモ帳に移さなくて大丈夫です。下の箱は<b>そのまま編集できます</b>。<b>[ ]</b> の中に元になる文章を入れて（長文のときは [ ] を消して貼り付けてもOKです）、「編集した文をコピーして、チャットに貼り付け」を押せば、そのままチャットに貼れます。'
+            : 'メモ帳に移さなくて大丈夫です。下の箱は<b>そのまま編集できます</b>。<b>[ ]</b> の部分を書き換えて、「編集した文をコピーして、チャットに貼り付け」を押せば、そのままチャットに貼れます。';
           html += '<article class="card" data-search="' + esc((s.name + " " + s.desc + " " + cat.name).toLowerCase()) + '">'
             + '<span class="no">SKILL ' + s.no + '</span>'
             + '<div class="skill-name">' + prettyName(s.name) + '</div>'
@@ -841,15 +861,15 @@
                   + '</div>'
                 : TEMPLATES[s.name]
                 ? '<div class="panel panel-run">'
-                  + (s.name === "muse_make_slides_with_narration_from_texts_to_youtube"
+                  + (isComposer
                       ? ''
                       : '<h3>実行用のテンプレート</h3>'
                         + '<div class="codebox"><code>' + esc(TEMPLATES[s.name]) + '</code>'
                         + '<button type="button" class="copy-btn" data-copycode="1">' + copySvg + 'コピー</button></div>')
-                  + (s.name === "muse_make_slides_with_narration_from_texts_to_youtube"
+                  + (isComposer
                       ? '<div class="composer"><h3>編集ボックス（その場で書いてコピー）</h3>'
-                        + '<p class="composer-note">メモ帳に移さなくて大丈夫です。下の箱は<b>そのまま編集できます</b>。<b>[ ]</b> の中に元になる文章を入れて（長文のときは [ ] を消して貼り付けてもOKです）、「編集した文をコピーして、チャットに貼り付け」を押せば、そのままチャットに貼れます。</p>'
-                        + '<textarea class="composer-box" rows="5" aria-label="実行文の編集ボックス">' + esc(COMPOSER_DEFAULT) + '</textarea>'
+                        + '<p class="composer-note">' + composerNote + '</p>'
+                        + '<textarea class="composer-box" rows="' + composerRows + '" aria-label="実行文の編集ボックス">' + esc(composerText) + '</textarea>'
                         + '<div class="composer-actions">'
                         + '<button type="button" class="copy-btn composer-copy">' + copySvg + '編集した文をコピーして、チャットに貼り付け</button>'
                         + '<button type="button" class="btn-reset composer-reset">元に戻す</button>'
@@ -858,7 +878,7 @@
                   + '<h3>最初に必要なもの・チェック項目</h3><ul class="need-list">'
                   + s.needs.map(function(n){ return "<li>" + n + "</li>"; }).join("")
                   + '</ul>'
-                  + (s.name === "muse_make_slides_with_narration_from_texts_to_youtube"
+                  + (isComposer
                       ? '<p class="after-note"><b>編集ボックスで書き換えた文をコピー</b>して、チャットに貼って送ってください。</p>'
                       : '<p class="after-note">コピーして<b>チャットに貼り、[ ]の部分を書き換えてから</b>送ってください。</p>')
                   + '</div>'
@@ -914,7 +934,7 @@
           var resetCard = compReset.closest(".card");
           var resetTa = resetCard ? resetCard.querySelector(".composer-box") : null;
           if(resetTa){
-            resetTa.value = COMPOSER_DEFAULT;
+            resetTa.value = resetTa._defaultValue || COMPOSER_DEFAULT;
             autoGrow(resetTa);
             resetTa.focus();
           }
@@ -929,9 +949,21 @@
       sectionsEl.addEventListener("input", function(e){
         if(e.target.classList && e.target.classList.contains("composer-box")){ autoGrow(e.target); }
       });
+      // 各編集ボックスの初期文を覚えておく（「元に戻す」と初回フォーカス用）
+      document.querySelectorAll(".composer-box").forEach(function(ta){ ta._defaultValue = ta.value; });
       sectionsEl.addEventListener("focusin", function(e){
-        if(e.target.classList && e.target.classList.contains("composer-box") && e.target.value === COMPOSER_DEFAULT){
-          e.target.setSelectionRange(1, 1);
+        if(e.target.classList && e.target.classList.contains("composer-box") && e.target._defaultValue && e.target.value === e.target._defaultValue){
+          var val = e.target.value;
+          var idx = 0;
+          while(idx < val.length){
+            var open = val.indexOf("[", idx);
+            if(open === -1){ break; }
+            var close = val.indexOf("]", open);
+            if(close === -1){ break; }
+            if(val.slice(open, close + 1) === "[ ]"){ idx = close + 1; continue; }
+            e.target.setSelectionRange(open + 1, close);
+            break;
+          }
         }
       });
       function autoGrow(ta){
