@@ -1013,8 +1013,14 @@
       }
       function openChatWindow(){
         var win = null;
-        try { win = window.open(CHAT_URL, "_blank", "noopener"); } catch(err){ win = null; }
-        if(win){ return true; }
+        // "noopener" を付けると、タブが開いても戻り値が null になり、
+        // 開けなかったと誤判定して予備の開き方まで実行され、タブが2つ開いてしまう。
+        // そのため noopener は付けず、開いた後に opener を切る。
+        try { win = window.open(CHAT_URL, "_blank"); } catch(err){ win = null; }
+        if(win){
+          try { win.opener = null; } catch(err){}
+          return true;
+        }
         // window.open が塞がれた場合の予備：アンカーのクリックで開く
         try {
           var a = document.createElement("a");
