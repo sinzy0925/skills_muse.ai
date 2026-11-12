@@ -840,15 +840,18 @@
                   + '<p class="simple-p">' + esc(s.runGuide) + '</p>'
                   + '</div>'
                 : TEMPLATES[s.name]
-                ? '<div class="panel panel-run"><h3>実行用のテンプレート</h3>'
-                  + '<div class="codebox"><code>' + esc(TEMPLATES[s.name]) + '</code>'
-                  + '<button type="button" class="copy-btn" data-copycode="1">' + copySvg + 'コピー</button></div>'
+                ? '<div class="panel panel-run">'
+                  + (s.name === "muse_make_slides_with_narration_from_texts_to_youtube"
+                      ? ''
+                      : '<h3>実行用のテンプレート</h3>'
+                        + '<div class="codebox"><code>' + esc(TEMPLATES[s.name]) + '</code>'
+                        + '<button type="button" class="copy-btn" data-copycode="1">' + copySvg + 'コピー</button></div>')
                   + (s.name === "muse_make_slides_with_narration_from_texts_to_youtube"
                       ? '<div class="composer"><h3>編集ボックス（その場で書いてコピー）</h3>'
-                        + '<p class="composer-note">メモ帳に移さなくて大丈夫です。下の箱は<b>そのまま編集できます</b>。<b>[ ]</b> の中に元になる文章を入れて（長文のときは [ ] を消して貼り付けてもOKです）、「編集した文をコピー」を押せば、そのままチャットに貼れます。</p>'
+                        + '<p class="composer-note">メモ帳に移さなくて大丈夫です。下の箱は<b>そのまま編集できます</b>。<b>[ ]</b> の中に元になる文章を入れて（長文のときは [ ] を消して貼り付けてもOKです）、「編集した文をコピーして、チャットに貼り付け」を押せば、そのままチャットに貼れます。</p>'
                         + '<textarea class="composer-box" rows="5" aria-label="実行文の編集ボックス">' + esc(COMPOSER_DEFAULT) + '</textarea>'
                         + '<div class="composer-actions">'
-                        + '<button type="button" class="copy-btn composer-copy">' + copySvg + '編集した文をコピー</button>'
+                        + '<button type="button" class="copy-btn composer-copy">' + copySvg + '編集した文をコピーして、チャットに貼り付け</button>'
                         + '<button type="button" class="btn-reset composer-reset">元に戻す</button>'
                         + '</div></div>'
                       : '')
@@ -856,7 +859,7 @@
                   + s.needs.map(function(n){ return "<li>" + n + "</li>"; }).join("")
                   + '</ul>'
                   + (s.name === "muse_make_slides_with_narration_from_texts_to_youtube"
-                      ? '<p class="after-note">上のテンプレートは見本です。実際に送るときは<b>編集ボックスで書き換えた文をコピー</b>して、チャットに貼って送ってください。</p>'
+                      ? '<p class="after-note"><b>編集ボックスで書き換えた文をコピー</b>して、チャットに貼って送ってください。</p>'
                       : '<p class="after-note">コピーして<b>チャットに貼り、[ ]の部分を書き換えてから</b>送ってください。</p>')
                   + '</div>'
                 : '<div class="panel panel-run"><h3>実行用の指示文</h3>'
