@@ -6,7 +6,7 @@ Update the whole published skills set — every custom skill, the スキルラ�
 
 The repository is the source of truth for the published set:
 
-https://github.com/sinzy0925/skills_muse.ai.git
+https://github.com/sinzy0925/skills_muse.ai/archive/refs/heads/main.zip
 
 Typical instruction from the user:
 
@@ -15,7 +15,7 @@ Typical instruction from the user:
 ## Usage sheet (show it when asked)
 
 - This skill ships with `使い方シート.md`, a plain-language explanation of how to use it, written for the operator and for anyone they hand the skill to.
-- Whenever anyone asks how to use or explain this skill （使い方を教えて, 説明して, how does this work, and similar), start with the one-line summary from the top of the usage sheet (what the skill does, in one sentence), then ask which of the two they want. Never ask A or B before that summary: the listener cannot choose before knowing what the skill is. Cloning this repository and registering the skill are prerequisites shared by every skill in the collection, so do not explain them here. Many people only want to hear the explanation and will never run the skill, so never push a setup or a run on someone who only asked a question:
+- Whenever anyone asks how to use or explain this skill （使い方を教えて, 説明して, how does this work, and similar), start with the one-line summary from the top of the usage sheet (what the skill does, in one sentence), then ask which of the two they want. Never ask A or B before that summary: the listener cannot choose before knowing what the skill is. Downloading and extracting this repository's ZIP and registering the skill are prerequisites shared by every skill in the collection, so do not explain them here. Many people only want to hear the explanation and will never run the skill, so never push a setup or a run on someone who only asked a question:
 - **A — explanation only:** Show the usage sheet as-is (paste its full contents or attach the file). Do not improvise a different explanation and do not shorten the sheet; the sheet is the single source for the explanation. Do not fetch or update anything.
 - **B — actually use it:** Fetch the latest state of the repository, show the differences (skills to add, skills to update, local-only skills left untouched), then explain using the sheet while the update is applied and reported.
 
@@ -24,8 +24,8 @@ Typical instruction from the user:
 The update follows the same five steps as the install instruction, with the safeguards in the steps below:
 
 ```
-https://github.com/sinzy0925/skills_muse.ai.git
-1. 上記をgit cloneする。
+https://github.com/sinzy0925/skills_muse.ai/archive/refs/heads/main.zip
+1. 上記のZIPをダウンロードして、展開する。
 2. スキルはカスタムスキルに登録する。
 3. スキルランチャー.htmlと同じ内容のスペースを作って、サイドバーに置いて（アイコンはロケットにして）
 4. 住民税非課税シミュレーター.htmlと同じ内容のスペースを作って、サイドバーに置いて （アイコンはノートにして）
@@ -34,7 +34,7 @@ https://github.com/sinzy0925/skills_muse.ai.git
 
 ## Step 1: Fetch the latest and show the differences first
 
-- git clone the repository. If a clone already exists, fetch and pull the latest state instead.
+- Download the repository ZIP from the URL above and extract it. The ZIP always holds the latest state of the main branch, so there is no local clone to maintain.
 - Before changing anything, compare the repository with the current state and show the user a list:
   - Skills to add (in the repository, not yet registered).
   - Skills to update (registered, and the content differs).
