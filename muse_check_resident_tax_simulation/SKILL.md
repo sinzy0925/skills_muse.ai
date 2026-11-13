@@ -29,6 +29,7 @@ The standard input is the text produced by the simulator's 「結果をコピー
 - Never invent a figure, a threshold or a rule. Every number in the report comes from the pasted text, from your own recomputation shown step by step, or from a cited source.
 - For the latest-information check, prefer official sources （厚生労働省， 国税庁， 日本年金機構， the municipality). Give the source name and the date you checked for every item. If something cannot be confirmed, write 「未確認」 — do not present a guess as current fact.
 - This is a check of an estimate, not tax advice. Always close by saying the final judgment belongs to the municipality / tax office, and that individual circumstances can change the result.
+- Every report begins with the fixed warning in Step 5, word for word and shown prominently. Never omit it, soften it, shorten it or move it to the end: a pension claiming decision cannot be undone, and the reader must see that before any figures.
 - Do not modify the simulator, do not file any tax return, and do not send anything to anyone. The only output is the report in chat.
 
 ## Step 1: Restate the inputs and the verdict
@@ -67,6 +68,12 @@ Check each of these against the pasted inputs and report only what is relevant:
 ## Step 5: Report
 
 Write the report in Japanese, in this order:
+
+First, before everything else, show this warning prominently — bold, standing on its own lines, exactly this text, never reworded:
+
+「⚠️これは、あくまでシミュレーションの結果です。年金の受け取り方は、一度決めると変更できません。間違うと大変です！実際に決める際は、必ず年金事務所で確認してから決めましょう！」
+
+Then the report proper:
 
 1. 判定の要約 — the verdict in one or two lines, including the household view.
 2. 検算の結果 — agree / differ (details from Step 2).

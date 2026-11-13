@@ -106,7 +106,8 @@ footer{color:var(--muted);font-size:13.5px;margin-top:10px}
 .ref-judge.partial{color:var(--amber)}
 .ref-notes{margin:14px 0 0;padding-left:20px}
 .ref-notes li{margin:7px 0;font-size:14.5px}
-@media(max-width:480px){.ref-table{font-size:13.5px}.ref-table th,.ref-table td{padding:6px 4px}}
+.warning-big{background:var(--red-bg);border:2.5px solid var(--red);border-radius:var(--radius);padding:16px 18px;margin:0 0 16px;font-size:19px;line-height:1.65;font-weight:800;color:var(--red)}
+@media(max-width:480px){.ref-table{font-size:13.5px}.ref-table th,.ref-table td{padding:6px 4px}.warning-big{font-size:18px;padding:14px 15px}}
 </style>
 </head>
 <body>
@@ -243,6 +244,7 @@ footer{color:var(--muted);font-size:13.5px;margin-top:10px}
 <!-- 結果 -->
 <div id="results" class="hidden">
 <section class="card">
+<div class="warning-big" role="alert">⚠️これは、あくまでシミュレーションの結果です。年金の受け取り方は、一度決めると変更できません。間違うと大変です！実際に決める際は、必ず年金事務所で確認してから決めましょう！</div>
 <h2>判定結果（本人）</h2>
 <p class="hint" id="resultSummary"></p>
 <div class="scenario-grid" id="scenarioGrid"></div>
@@ -250,6 +252,7 @@ footer{color:var(--muted);font-size:13.5px;margin-top:10px}
 </section>
 
 <section class="card" id="refCard">
+<div class="warning-big" role="alert">⚠️これは、あくまでシミュレーションの結果です。年金の受け取り方は、一度決めると変更できません。間違うと大変です！実際に決める際は、必ず年金事務所で確認してから決めましょう！</div>
 <h2>参考：受給開始年齢と非課税の目安</h2>
 <p class="hint">これは「何歳から受け取れば非課税の範囲に入るか」を確かめるための<strong>参考の目安</strong>です。受給開始年齢の変更を<strong>おすすめするものではありません</strong>。とくに繰上げ受給には下記の注意点があります。</p>
 <div id="refMessage"></div>
