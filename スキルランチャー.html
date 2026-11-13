@@ -339,7 +339,7 @@
       <main id="sections"></main>
 
       <footer>
-        全11本のカスタムスキル（GitHub公開済み・使い方シート付き）<br />
+        全12本のカスタムスキル（GitHub公開済み・使い方シート付き）<br />
         投稿・公開・アップロードを伴うスキルは、どれも下書きや設定の確認とOKの後だけ実行されます。
       </footer>
     </div>
@@ -354,7 +354,8 @@
         { id:"sns",     name:"SNS投稿",          note:"InstagramとThreadsの日次投稿", color:"#C2439B", icon:'<path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.6L3 21l1.9-5.6A8.5 8.5 0 1 1 21 11.5z"/>' },
         { id:"minutes", name:"議事録・告知",     note:"AIアウトプット雑談会のDiscord投稿", color:"#0E9384", icon:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/>' },
         { id:"books",   name:"経理・台帳",       note:"領収書をスプレッドシート台帳へ", color:"#E87A2E", icon:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h.01M15 8h.01M9 12h.01M15 12h.01M9 16h.01M15 16h.01"/>' },
-        { id:"tax",     name:"税金チェック",     note:"住民税非課税シミュレーターの結果を確認", color:"#5B8C2A", icon:'<circle cx="7" cy="7" r="2.6"/><circle cx="17" cy="17" r="2.6"/><path d="M18.5 5 5.5 19"/>' }
+        { id:"tax",     name:"税金チェック",     note:"住民税非課税シミュレーターの結果を確認", color:"#5B8C2A", icon:'<circle cx="7" cy="7" r="2.6"/><circle cx="17" cy="17" r="2.6"/><path d="M18.5 5 5.5 19"/>' },
+        { id:"manage",  name:"スキル管理",       note:"GitHubのスキル一式を最新に更新", color:"#546E7A", icon:'<path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/>' }
       ];
 
       var SKILLS = [
@@ -748,6 +749,39 @@
           needs:[
             "<b>住民税非課税シミュレーターの結果</b>（コピーボタンで作った文章）"
           ]
+        },
+        {
+          cat:"manage", no:"12",
+          name:"muse_skills_space_update",
+          desc:"GitHubで公開しているスキル一式（スキル全部・スキルランチャー・住民税非課税シミュレーター・常時参照して欲しいメモ）を、最新の状態にまとめて更新してくれるスキル",
+          start:"チャットで「muse_skills_space_update を実行して」と送る",
+          detail:[
+            { h:"聞き方に合わせて、説明のしかたが変わります", items:[
+              "<b>使い方だけ知りたい場合</b>：このシートで説明します（取得や更新は行いません）。",
+              "<b>実際に使う場合</b>：リポジトリの最新を取得し、差分（追加・更新・対象外）を見せてから、実際の更新をしながら説明します。"
+            ]},
+            { h:"使い方（3ステップ）", items:[
+              "チャットで「muse_skills_space_update を実行して」と送る。",
+              "最初に出る差分の一覧（追加されるスキル／更新されるスキル／この環境にだけあって対象外のスキル）を確認する。",
+              "更新が終わったら、結果の報告を確認する。"
+            ]},
+            { h:"実行すると起きること", items:[
+              "GitHubのリポジトリ（https://github.com/sinzy0925/skills_muse.ai.git）から最新を取得します。",
+              "スキルは、リポジトリにあるもの全部がカスタムスキルに登録し直されます（新しいスキルは追加、既存のスキルは最新版に更新）。",
+              "スキルランチャーと住民税非課税シミュレーターのスペースが、リポジトリのHTMLと同じ内容に更新されます（サイドバー配置、アイコンはランチャーがロケット、シミュレーターがノート）。",
+              "「常時参照して欲しいメモ」が最新版に登録し直されます。",
+              "報告には、追加・更新されたスキル名と、更新後のメモの件数が入ります。"
+            ]},
+            { h:"注意点", items:[
+              "この環境にだけあるスキル（リポジトリに無いもの）は、消したり書き換えたりしません。一覧に載せて報告するだけです。",
+              "スペースを共有リンクで公開している場合、リンク先は「再共有」するまで前の版のままです。再共有は、本人のOKをもらってから行います。",
+              "差分が何もなければ「最新です」と報告して終わります。"
+            ]}
+          ],
+          needs:[
+            "最初に出る<b>差分の一覧</b>を確認する",
+            "更新が終わったら<b>結果の報告</b>を確認する"
+          ]
         }
       ];
 
@@ -763,7 +797,8 @@
         "muse_announcement_ai_output_to_discord": "以下のスキルを実行して\nmuse_announcement_ai_output_to_discord",
         "muse_receipt_pdf_to_sheets": "「領収書整理_実行前」フォルダに領収書を入れたので、以下のスキルを実行して\nmuse_receipt_pdf_to_sheets",
         "muse_medical_expenses_to_sheets": "「医療費整理_実行前」フォルダに領収書を入れたので、以下のスキルを実行して\nmuse_medical_expenses_to_sheets\n\n通院交通費のメモがあれば、以下に書いてください\n[例：11月12日、○○病院、電車で○○駅→○○駅、往復○○円]",
-        "muse_check_resident_tax_simulation": "[ここにシミュレーターの結果を貼り付け]\n上記文章から以下のスキルを実行して\nmuse_check_resident_tax_simulation"
+        "muse_check_resident_tax_simulation": "[ここにシミュレーターの結果を貼り付け]\n上記文章から以下のスキルを実行して\nmuse_check_resident_tax_simulation",
+        "muse_skills_space_update": "以下のスキルを実行して\nmuse_skills_space_update"
       };
 
       // 編集ボックスの初期文（テキスト版スライド専用）
@@ -781,7 +816,8 @@
         "muse_announcement_ai_output_to_discord": true,
         "muse_receipt_pdf_to_sheets": true,
         "muse_medical_expenses_to_sheets": true,
-        "muse_check_resident_tax_simulation": true
+        "muse_check_resident_tax_simulation": true,
+        "muse_skills_space_update": true
       };
       function composerTextFor(name){
         if(name === "muse_make_slides_with_narration_from_texts_to_youtube"){ return COMPOSER_DEFAULT; }

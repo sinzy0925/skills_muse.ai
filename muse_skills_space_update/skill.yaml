@@ -1,0 +1,5 @@
+name: "muse_skills_space_update"
+title: "スキル一式アップデーター"
+description: "Update the whole published skills set from its GitHub repository to the latest state: fetch the repository, show the differences first (skills to add, skills to update, and local-only skills, which are never deleted), register the repository's skills as custom skills, refresh the skill-launcher and resident-tax-simulator Spaces (kept in the sidebar, rocket and notebook icons), and re-register the always-referenced rules memo. A shared Space's public link keeps serving the previously shared version until it is shared again, which happens only after the user's OK."
+category: "Work and knowledge"
+include_in_prompt: false
