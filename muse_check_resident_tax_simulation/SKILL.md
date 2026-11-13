@@ -12,6 +12,8 @@ Take the result text of the 住民税非課税シミュレーター (a Space the
 
 The standard input is the text produced by the simulator's 「結果をコピー（AI確認用）」 button. Its first line invokes this skill, followed by sections for the person's inputs, the spouse's inputs, dependents, and the verdicts (person / household / spouse, plus the future scenario when present).
 
+- The copied text may also include a reference section （受給開始年齢と非課税の目安）: per-starting-age verdicts estimated from the age-65 pension amount using the official early-claim reduction and deferral increase rates. Treat it as reference only: it is not part of the simulator's verdicts, and its per-age pension amounts are estimates, not entered inputs. Do not recompute it as if it were a verdict; note it in the report as reference information.
+
 - If some sections are missing, work with what is there and say plainly what could not be checked. Ask for the missing part only when it changes the conclusion.
 - If the operator pastes a screenshot or free-form text instead, read what can be read and mark the rest as unread — never fill gaps by guessing.
 

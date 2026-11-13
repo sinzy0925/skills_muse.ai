@@ -90,6 +90,23 @@ footer{color:var(--muted);font-size:13.5px;margin-top:10px}
 .copy-status{margin:10px 0 0;padding:10px 12px;border-radius:10px;font-size:15px;font-weight:700;background:var(--amber-bg);color:var(--amber)}
 .copy-status.ok{background:var(--green-bg);color:var(--green)}
 #copyFallback{width:100%;margin-top:10px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font-size:14px;font-family:inherit}
+.ref-msg{border-radius:10px;padding:12px 14px;font-size:15.5px;font-weight:700;margin:10px 0 14px}
+.ref-msg.found{background:var(--green-bg);color:var(--green);border:1.5px solid var(--green)}
+.ref-msg.none{background:var(--amber-bg);color:var(--amber);border:1.5px solid var(--amber)}
+.ref-msg.already{background:var(--surface2);color:var(--ink);border:1.5px solid var(--line)}
+.ref-table{width:100%;border-collapse:collapse;font-size:14.5px}
+.ref-table th,.ref-table td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.ref-table th:first-child,.ref-table td:first-child{text-align:left;white-space:normal}
+.ref-table thead th{color:var(--muted);font-weight:600;border-bottom:1.5px solid var(--line)}
+.ref-table tr.is65 td{background:var(--surface2);font-weight:700}
+.ref-table tr.latest-free td{background:var(--green-bg);font-weight:700}
+.ref-judge{font-weight:800}
+.ref-judge.free{color:var(--green)}
+.ref-judge.tax{color:var(--red)}
+.ref-judge.partial{color:var(--amber)}
+.ref-notes{margin:14px 0 0;padding-left:20px}
+.ref-notes li{margin:7px 0;font-size:14.5px}
+@media(max-width:480px){.ref-table{font-size:13.5px}.ref-table th,.ref-table td{padding:6px 4px}}
 </style>
 </head>
 <body>
@@ -230,6 +247,21 @@ footer{color:var(--muted);font-size:13.5px;margin-top:10px}
 <p class="hint" id="resultSummary"></p>
 <div class="scenario-grid" id="scenarioGrid"></div>
 <div id="householdBox"></div>
+</section>
+
+<section class="card" id="refCard">
+<h2>参考：受給開始年齢と非課税の目安</h2>
+<p class="hint">これは「何歳から受け取れば非課税の範囲に入るか」を確かめるための<strong>参考の目安</strong>です。受給開始年齢の変更を<strong>おすすめするものではありません</strong>。とくに繰上げ受給には下記の注意点があります。</p>
+<div id="refMessage"></div>
+<div id="refTableWrap"></div>
+<p class="hint" id="refFootnote" style="margin-top:10px"></p>
+<h3 style="font-size:16px;margin:16px 0 0">注意点（必ずお読みください）</h3>
+<ul class="ref-notes">
+<li>繰上げ受給は<strong>一生減額され、取り消せません</strong>。</li>
+<li>繰上げすると、<strong>障害年金・遺族年金の受給に影響が出る場合があります</strong>。</li>
+<li><strong>非課税になって浮く税額より、年金の減額の方が大きくなる場合があります</strong>。</li>
+<li>この目安は、その他の所得・世帯構成・障害者などの条件が現在の入力と同じという前提の概算です。年金額の概算には、加給年金・振替加算などの細かい差異は反映していません。</li>
+</ul>
 </section>
 
 <section class="card" id="spouseResultCard">
@@ -498,6 +530,91 @@ $("simForm").addEventListener("submit", function(ev){
   if($("disPension").checked) summary += " ※障害年金・遺族年金は非課税のため、年金額には含めていません。";
   $("resultSummary").textContent = summary;
 
+  /* ---------- 参考：受給開始年齢と非課税の目安（60〜75歳） ---------- */
+  (function buildRef(){
+    var msgBox=$("refMessage"), wrap=$("refTableWrap"), foot=$("refFootnote");
+    msgBox.innerHTML=""; wrap.innerHTML=""; foot.textContent="";
+    window.__refInfo=null;
+    if(p65<=0){
+      msgBox.innerHTML="<div class='ref-msg none'>65歳受給開始の見込額が未入力のため、この目安は計算できません。65歳の見込額を入力して、もう一度判定してください。</div>";
+      window.__refInfo={available:false};
+      return;
+    }
+    // 繰上げ減額率：1962年4月2日以降生まれは月0.4%、それ以前は月0.5%
+    var cutoff=new Date(1962,3,2).getTime();
+    var earlyRate = (birth.getTime() >= cutoff) ? 0.004 : 0.005;
+    var base70 = (p70>0) ? p70 : p65*(1+0.007*5*12);
+    var usedFallback = (p70<=0 || p75<=0);
+    function estBase(age){
+      if(age<65) return p65*(1 - earlyRate*(65-age)*12);
+      if(age===65) return p65;
+      if(age<=69) return p65*(1 + 0.007*(age-65)*12);
+      if(age===70) return base70;
+      if(age<=74) return base70*(1 + 0.007*(age-70)*12);
+      // 75歳
+      return (p75>0) ? p75 : base70*(1 + 0.007*5*12);
+    }
+    var rows=[], latestFree=null, at65=null;
+    for(var age=60; age<=75; age++){
+      var base=estBase(age);
+      var sDate=addYears(birth, age);
+      var kak=kakyuAt(sDate, ctx);
+      var pension=base + kak.total;
+      var total=miscIncome(pension) + other;
+      var j=judge(total, lim, special);
+      var row={age:age, base:base, pension:pension, total:total, level:j.level, label:j.label};
+      rows.push(row);
+      if(age===65) at65=row;
+      if(j.level==="free") latestFree=row; // 年齢順に走査するので、最後に残るのが最も遅い年齢
+    }
+    var at65Tax = at65 && at65.level!=="free";
+    // 見出しメッセージ
+    var msgHtml, msgCls, summaryText;
+    if(!at65Tax){
+      msgCls="already";
+      msgHtml="65歳開始でも非課税の範囲に入っています。下の表は、開始年齢を変えた場合の目安です。";
+      summaryText="65歳開始でも非課税の範囲に入っています。";
+    } else if(latestFree){
+      msgCls="found";
+      msgHtml="65歳開始では課税ですが、<strong>"+latestFree.age+"歳開始</strong>なら非課税の範囲に入ります（年金額は約"+YEN(latestFree.pension)+"）。";
+      summaryText="65歳開始では課税ですが、"+latestFree.age+"歳開始なら非課税の範囲に入ります（年金額は約"+YEN(latestFree.pension)+"）。";
+    } else {
+      msgCls="none";
+      msgHtml="60〜75歳のどの開始年齢でも、現在の条件では非課税の範囲には入りません。";
+      summaryText="60〜75歳のどの開始年齢でも、現在の条件では非課税の範囲には入りませんでした。";
+    }
+    msgBox.innerHTML="<div class='ref-msg "+msgCls+"'>"+msgHtml+"</div>";
+    // 一覧表
+    var html="<table class='ref-table'><thead><tr><th>受給開始年齢</th><th>概算年金額<br>（判定用）</th><th>判定</th></tr></thead><tbody>";
+    rows.forEach(function(r){
+      var cls=[];
+      if(r.age===65) cls.push("is65");
+      if(at65Tax && latestFree && r.age===latestFree.age) cls.push("latest-free");
+      var jTxt, jCls;
+      if(r.level==="free"){ jTxt="非課税"; jCls="free"; }
+      else if(r.level==="partial"){ jTxt="課税（所得割のみ非課税）"; jCls="partial"; }
+      else { jTxt="課税"; jCls="tax"; }
+      html+="<tr class='"+cls.join(" ")+"'><td>"+r.age+"歳開始"+(r.age===65?"（基準）":"")+(at65Tax && latestFree && r.age===latestFree.age?" ★":"")+"</td><td>約"+YEN(r.pension)+"</td><td><span class='ref-judge "+jCls+"'>"+jTxt+"</span></td></tr>";
+    });
+    html+="</tbody></table>";
+    wrap.innerHTML=html;
+    var notes=[];
+    notes.push("繰上げの減額率は月"+(earlyRate===0.004?"0.4":"0.5")+"％（生年月日による）で計算しています。繰下げは月0.7％増額で概算しています。");
+    notes.push("概算年金額は、定期便の見込額を基にした概算に、判定時点の加給年金を加えた「判定用」の金額です。");
+    if(at65Tax && latestFree) notes.push("★は、65歳開始で課税の場合に非課税の範囲に入る開始年齢のうち、最も遅い年齢です。");
+    if(usedFallback) notes.push("70歳・75歳の見込額が未入力の箇所は、65歳（または70歳）の額に繰下げ増額を当てはめて概算しています。定期便の額を入力すると、より実額に近い目安になります。");
+    foot.textContent=notes.join(" ");
+    window.__refInfo={
+      available:true,
+      at65Tax:!!at65Tax,
+      at65Level: at65 ? at65.level : null,
+      latestFreeAge: latestFree ? latestFree.age : null,
+      latestFreePension: latestFree ? latestFree.pension : null,
+      summaryText: summaryText,
+      rows: rows.map(function(r){ return {age:r.age, pension:r.pension, level:r.level}; })
+    };
+  })();
+
   /* 配偶者の判定 */
   var spCard=$("spouseResultCard"), spBox=$("spouseResult"), house=$("householdBox");
   house.innerHTML="";
@@ -678,6 +795,22 @@ function buildCopyText(){
   if(fut){
     lines.push("― 将来シナリオの要点 ―");
     lines.push(fut);
+  }
+  /* 参考：受給開始年齢と非課税の目安（要約） */
+  lines.push("― 参考：受給開始年齢と非課税の目安 ―");
+  var ref=window.__refInfo;
+  if(ref && ref.available){
+    lines.push(ref.summaryText);
+    if(ref.rows && ref.rows.length){
+      var parts=ref.rows.map(function(r){
+        var j = r.level==="free" ? "非課税" : (r.level==="partial" ? "課税（所得割のみ非課税）" : "課税");
+        return r.age+"歳：約"+Math.round(r.pension).toLocaleString("ja-JP")+"円・"+j;
+      });
+      lines.push("開始年齢ごとの概算（判定用年金額／判定）：" + parts.join("／"));
+    }
+    lines.push("※この目安は参考であり、おすすめではありません。繰上げ受給は一生減額され取り消せません。障害年金・遺族年金への影響や、浮く税額より減額が大きくなる場合があることに注意してください。その他の所得・世帯構成・障害者などの条件が現在の入力と同じという前提の概算で、加給年金・振替加算などの細かい差異は反映していません。");
+  } else {
+    lines.push("表示なし（65歳受給開始の見込額が未入力のため計算できませんでした）");
   }
   return lines.join("\n");
 }
