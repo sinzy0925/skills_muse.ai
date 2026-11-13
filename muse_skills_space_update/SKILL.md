@@ -35,6 +35,7 @@ https://github.com/sinzy0925/skills_muse.ai/archive/refs/heads/main.zip
 ## Step 1: Fetch the latest and show the differences first
 
 - Download the repository ZIP from the URL above and extract it. The ZIP always holds the latest state of the main branch, so there is no local clone to maintain.
+- Extract with a UTF-8-aware tool. If the Japanese file names come out mangled (shown as escaped names such as `#U30b9...`), the extraction used the wrong filename encoding: re-extract with a UTF-8-aware method (for example Python's zipfile module) before comparing anything — mangled names would otherwise look like missing and extra files.
 - Before changing anything, compare the repository with the current state and show the user a list:
   - Skills to add (in the repository, not yet registered).
   - Skills to update (registered, and the content differs).
