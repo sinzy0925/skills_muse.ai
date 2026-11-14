@@ -339,7 +339,7 @@
       <main id="sections"></main>
 
       <footer>
-        全12本のカスタムスキル（GitHub公開済み・使い方シート付き）<br />
+        全13本のカスタムスキル（GitHub公開済み・使い方シート付き）<br />
         投稿・公開・アップロードを伴うスキルは、どれも下書きや設定の確認とOKの後だけ実行されます。
       </footer>
     </div>
@@ -528,6 +528,20 @@
             "ドライブのファイル（<b>リンクまたはファイル名</b>）",
             "<b>タイトルと公開範囲</b>（必須の確認事項）",
             "投稿先チャンネル、子ども向けかどうか（確認されます）"
+          ]
+        },
+        {
+          cat:"upload", no:"13",
+          name:"muse_up_youtube_from_google_slides",
+          desc:"Googleスライドを、Google Vidsでナレーション付きの動画にして、設定を確認してからYouTubeにアップロードするスキルです",
+          start:"",
+          simpleText:"完成したGoogleスライドを、Google Vidsで動画化し、スピーカーノートの文章をAIナレーションとして入れて、YouTubeにアップロードするスキルです。アップロード前に、タイトル（既定はスライドのタイトル）、公開範囲、子ども向けかどうか、説明文、サムネイル（先頭ページの画像）を確認します。ログインはブラウザの中で本人が行います。",
+          detailText:"手順は、①準備（サムネイル用に先頭ページの画像を保存し、スライドの内容から概要欄の下書きを作る）→②設定の確認→③ブラウザのGoogleログイン確認→④スライドをVidsで動画に変換（取り込み時の自動生成はOFF）→⑤スピーカーノートからAIナレーションを全シーンに挿入→⑥YouTubeにエクスポート→⑦YouTube Studioで設定を入れて保存、です。注意点として、カスタムサムネイルにはチャンネルの電話番号確認が必要で、未確認の場合はサムネイルだけ後回しになります。",
+          detail:[],
+          needs:[
+            "<b>GoogleスライドのURL</b>",
+            "<b>タイトルと公開設定</b>（アップロード前に確認されます）",
+            "ログインは<b>ブラウザの中で本人が</b>行う"
           ]
         },
         {
@@ -818,6 +832,7 @@
         "muse_make_slides_with_narration_from_screenshots_to_youtube": "小さなファイルは、そのままmuse.aiのチャットに貼り付ける\n\n大きなファイルや動画は、Googleドライブに置いてから、そのアドレスを以下に貼り付ける\n[Googleドライブのアドレス]\n上記文章から以下のスキルを実行して\nmuse_make_slides_with_narration_from_screenshots_to_youtube",
         "muse_make_slides_without_narration_from_screenshots": "小さなファイルは、そのままmuse.aiのチャットに貼り付ける\n\n大きなファイルや動画は、Googleドライブに置いてから、そのアドレスを以下に貼り付ける\n[Googleドライブのアドレス]\n上記文章から以下のスキルを実行して\nmuse_make_slides_without_narration_from_screenshots",
         "muse_up_youtube_from_google_drive_mp4": "Googleドライブに置いたmp4のアドレス（またはファイル名）を以下に貼り付ける\n[Googleドライブのアドレス]\n上記から以下のスキルを実行して\nmuse_up_youtube_from_google_drive_mp4",
+        "muse_up_youtube_from_google_slides": "muse_up_youtube_from_google_slides を実行して（Googleスライドの動画化とYouTubeアップロード）\nスライドのURL： [ここにGoogleスライドのURL]\nタイトル： [そのままでよければ「スライドのタイトルでOK」]\n公開設定： [限定公開／公開／非公開]\n使うブラウザ： [内蔵ブラウザ／Chrome拡張]",
         "muse_sns_daily_posting": "以下のスキルを実行して\nmuse_sns_daily_posting",
         "muse_make_gijiroku_ai-output": "【送り方】\n1. 当日の写真を、このチャットにそのまま貼り付ける\n2. 下の[ ]を全部埋める\n3. この文章ごと送る\n\n開催日：[例：2026年11月14日]\n次回の開催日：[例：2026年11月21日]\n参加人数：[例：14人]\n新規参加人数（初めて参加した人）：[例：3人]\n\n議事録の元になる文章（文字起こし）は、以下に貼り付けてください\n[ここに文字起こしを貼り付け]\n\n上記文章から以下のスキルを実行して\nmuse_make_gijiroku_ai-output",
         "muse_announcement_ai_output_to_discord": "以下のスキルを実行して\nmuse_announcement_ai_output_to_discord",
@@ -839,6 +854,7 @@
         "muse_make_slides_with_narration_from_screenshots_to_youtube": true,
         "muse_make_slides_without_narration_from_screenshots": true,
         "muse_up_youtube_from_google_drive_mp4": true,
+        "muse_up_youtube_from_google_slides": true,
         "muse_sns_daily_posting": true,
         "muse_make_gijiroku_ai-output": true,
         "muse_announcement_ai_output_to_discord": true,

@@ -65,6 +65,7 @@ https://github.com/sinzy0925/skills_muse.ai/archive/refs/heads/main.zip
 | スキル | 内容 |
 |---|---|
 | `muse_up_youtube_from_google_drive_mp4` | Googleドライブに置いたmp4を、設定を確認してからYouTubeへアップロードする |
+| `muse_up_youtube_from_google_slides` | Googleスライドを、Google Vidsでナレーション付き動画にして、設定を確認してからYouTubeへアップロードする |
 
 ### SNS投稿
 

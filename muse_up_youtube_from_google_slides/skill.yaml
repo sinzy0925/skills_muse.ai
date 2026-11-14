@@ -1,0 +1,5 @@
+name: "muse_up_youtube_from_google_slides"
+title: "Google Slides → YouTube Uploader"
+description: "Turn a Google Slides deck into a YouTube video: prepare the thumbnail from the deck's first page and a description from the deck's content, convert the deck to a video in Google Vids, insert AI narration on every scene from the speaker notes, export to YouTube, then set the title, thumbnail, description, audience and visibility in YouTube Studio and save."
+category: "Work and knowledge"
+include_in_prompt: false
