@@ -339,7 +339,7 @@
       <main id="sections"></main>
 
       <footer>
-        全13本のカスタムスキル（GitHub公開済み・使い方シート付き）<br />
+        全14本のカスタムスキル（GitHub公開済み・使い方シート付き）<br />
         投稿・公開・アップロードを伴うスキルは、どれも下書きや設定の確認とOKの後だけ実行されます。
       </footer>
     </div>
@@ -355,6 +355,7 @@
         { id:"minutes", name:"議事録・告知（運営担当専用！）", note:"AIアウトプット雑談会のDiscord投稿", color:"#0E9384", icon:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/>' },
         { id:"books",   name:"経理・台帳",       note:"領収書をスプレッドシート台帳へ", color:"#E87A2E", icon:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h.01M15 8h.01M9 12h.01M15 12h.01M9 16h.01M15 16h.01"/>' },
         { id:"tax",     name:"税金チェック",     note:"住民税非課税シミュレーターの結果を確認", color:"#5B8C2A", icon:'<circle cx="7" cy="7" r="2.6"/><circle cx="17" cy="17" r="2.6"/><path d="M18.5 5 5.5 19"/>' },
+        { id:"fortune", name:"占い",             note:"四柱推命×タロットの統合鑑定", color:"#6C4AB0", icon:'<path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/><path d="M19 3v3"/><path d="M17.5 4.5h3"/>' },
         { id:"manage",  name:"スキル管理",       note:"GitHubのスキル一式を最新に更新", color:"#546E7A", icon:'<path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/>' },
         { id:"create",  name:"スペース作成",     note:"再現手順書をもとにアプリ型スペースを作る", color:"#A16207", icon:'<path d="M4.5 19a9 9 0 1 1 15 0"/><path d="m12 14 4.2-4.2"/><circle cx="12" cy="14" r="1.4"/>' }
       ];
@@ -766,6 +767,20 @@
           ]
         },
         {
+          cat:"fortune", no:"14",
+          name:"muse_fortune_shichusuimei_tarot",
+          desc:"生年月日から四柱推命で土台を見て、いまの相談にタロットを引いて、2つを束ねた鑑定文を作るスキルです",
+          start:"",
+          simpleText:"四柱推命とタロットを組み合わせた統合鑑定のスキルです。四柱推命では生年月日から命式を作り、生まれ持った傾向や五行のバランス、今年の流れを見ます。タロットでは、いまの相談ごとに3枚（現状／課題／助言）を引いて読みます。出生時刻が分からなくても、簡易鑑定で占えます。",
+          detailText:"手順は、①入力の確認（生年月日必須、出生時刻は分かれば、相談テーマ必須）→②命式の計算（初回は既知のサンプルで検算してから）→③タロットの抽選（乱数で3枚、引き直しなし）→④鑑定文の作成、です。鑑定文は、命式サマリー／生まれ持った傾向／今の運気の流れ／タロット3枚／統合メッセージ／行動ヒント／締めの一言、の7部構成で、長さの既定は標準（約1,000字）、口調は優しく背中を押す形です。大運（10年単位の運気）はこの版では扱いません。占いはエンターテインメントとして提示し、健康・法律・お金について断定的な判断はしません。",
+          detail:[],
+          needs:[
+            "<b>生年月日</b>（必須）",
+            "<b>相談テーマ</b>（必須）",
+            "出生時刻は<b>分かる場合だけ</b>でOK（不明でも簡易鑑定できます）"
+          ]
+        },
+        {
           cat:"manage", no:"12",
           name:"muse_skills_space_update",
           desc:"GitHubで公開しているスキル一式（スキル全部・スキルランチャー・住民税非課税シミュレーター・常時参照して欲しいメモ）を、最新の状態にまとめて更新してくれるスキル",
@@ -839,6 +854,7 @@
         "muse_receipt_pdf_to_sheets": "「領収書整理_実行前」フォルダに領収書を入れたので、以下のスキルを実行して\nmuse_receipt_pdf_to_sheets",
         "muse_medical_expenses_to_sheets": "「医療費整理_実行前」フォルダに領収書を入れたので、以下のスキルを実行して\nmuse_medical_expenses_to_sheets\n\n通院交通費のメモがあれば、以下に書いてください\n[例：11月12日、○○病院、電車で○○駅→○○駅、往復○○円]",
         "muse_check_resident_tax_simulation": "[ここにシミュレーターの結果を貼り付け]\n上記文章から以下のスキルを実行して\nmuse_check_resident_tax_simulation",
+        "muse_fortune_shichusuimei_tarot": "muse_fortune_shichusuimei_tarot を実行して（四柱推命×タロット鑑定）\n生年月日： [例：1990年5月15日]\n出生時刻： [分かる場合は。分からなければ「不明」]\n相談テーマ： [仕事／恋愛／お金／人間関係、または自由に一言]",
         "muse_skills_space_update": "以下のスキルを実行して\nmuse_skills_space_update",
         "トークンメーターを作る": "トークンメーターを作ってください。再現手順書は GitHub の skills_muse.ai リポジトリにある「トークンメーター.md」です。ZIP（https://github.com/sinzy0925/skills_muse.ai/archive/refs/heads/main.zip）をダウンロードして展開し、その中のトークンメーター.md の手順どおりに作ってください。",
         "システムメーターを作る": "システムメーターを作ってください。再現手順書は GitHub の skills_muse.ai リポジトリにある「システムメーター.md」です。ZIP（https://github.com/sinzy0925/skills_muse.ai/archive/refs/heads/main.zip）をダウンロードして展開し、その中のシステムメーター.md の手順どおりに作ってください。"
@@ -861,6 +877,7 @@
         "muse_receipt_pdf_to_sheets": true,
         "muse_medical_expenses_to_sheets": true,
         "muse_check_resident_tax_simulation": true,
+        "muse_fortune_shichusuimei_tarot": true,
         "muse_skills_space_update": true,
         "トークンメーターを作る": true,
         "システムメーターを作る": true
