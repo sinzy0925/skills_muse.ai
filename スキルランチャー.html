@@ -796,6 +796,18 @@
           needs:[
             "特になし（指示文を送ると、ZIPのダウンロードと展開から作成が始まります）"
           ]
+        },
+        {
+          cat:"create", no:"14", badge:"スペース作成",
+          name:"システムメーターを作る",
+          desc:"Museが動いている環境のディスク残量・フォルダ別容量・メモリ・CPU・OSの状態を見える化するアプリ型スペースを、再現手順書をもとに作ります（スキルではありません）",
+          start:"",
+          simpleText:"システムメーターはスキルではなく、データを保存するアプリ型スペースです。ファイルのコピーでは渡せないため、GitHubにある再現手順書『システムメーター.md』をもとに、自分のMuseに同じアプリを作ってもらいます。表示されるのは、作った人自身の環境（Museが動いているサーバー）の状態で、自分のPCの状態ではありません。",
+          detailText:"画面は、燃料計のような横長ゲージ（ディスク残量、安全・注意・危険の3ゾーン）、フォルダ別の容量内訳、大きなファイルTop5、メモリ、CPUの負荷、OS情報、カスタムスキルやスペースの数などで構成されます。計測はシェルコマンドで行い、1時間ごとの自動更新も設定されます。実行すると、ZIPをダウンロードして展開し、手順書のとおりに作成が始まります。",
+          detail:[],
+          needs:[
+            "特になし（指示文を送ると、ZIPのダウンロードと展開から作成が始まります）"
+          ]
         }
       ];
 
@@ -813,7 +825,8 @@
         "muse_medical_expenses_to_sheets": "「医療費整理_実行前」フォルダに領収書を入れたので、以下のスキルを実行して\nmuse_medical_expenses_to_sheets\n\n通院交通費のメモがあれば、以下に書いてください\n[例：11月12日、○○病院、電車で○○駅→○○駅、往復○○円]",
         "muse_check_resident_tax_simulation": "[ここにシミュレーターの結果を貼り付け]\n上記文章から以下のスキルを実行して\nmuse_check_resident_tax_simulation",
         "muse_skills_space_update": "以下のスキルを実行して\nmuse_skills_space_update",
-        "トークンメーターを作る": "トークンメーターを作ってください。再現手順書は GitHub の skills_muse.ai リポジトリにある「トークンメーター.md」です。ZIP（https://github.com/sinzy0925/skills_muse.ai/archive/refs/heads/main.zip）をダウンロードして展開し、その中のトークンメーター.md の手順どおりに作ってください。"
+        "トークンメーターを作る": "トークンメーターを作ってください。再現手順書は GitHub の skills_muse.ai リポジトリにある「トークンメーター.md」です。ZIP（https://github.com/sinzy0925/skills_muse.ai/archive/refs/heads/main.zip）をダウンロードして展開し、その中のトークンメーター.md の手順どおりに作ってください。",
+        "システムメーターを作る": "システムメーターを作ってください。再現手順書は GitHub の skills_muse.ai リポジトリにある「システムメーター.md」です。ZIP（https://github.com/sinzy0925/skills_muse.ai/archive/refs/heads/main.zip）をダウンロードして展開し、その中のシステムメーター.md の手順どおりに作ってください。"
       };
 
       // 編集ボックスの初期文（テキスト版スライド専用）
@@ -833,7 +846,8 @@
         "muse_medical_expenses_to_sheets": true,
         "muse_check_resident_tax_simulation": true,
         "muse_skills_space_update": true,
-        "トークンメーターを作る": true
+        "トークンメーターを作る": true,
+        "システムメーターを作る": true
       };
       function composerTextFor(name){
         if(name === "muse_make_slides_with_narration_from_texts_to_youtube"){ return COMPOSER_DEFAULT; }
