@@ -355,7 +355,8 @@
         { id:"minutes", name:"議事録・告知（運営担当専用！）", note:"AIアウトプット雑談会のDiscord投稿", color:"#0E9384", icon:'<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/>' },
         { id:"books",   name:"経理・台帳",       note:"領収書をスプレッドシート台帳へ", color:"#E87A2E", icon:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h.01M15 8h.01M9 12h.01M15 12h.01M9 16h.01M15 16h.01"/>' },
         { id:"tax",     name:"税金チェック",     note:"住民税非課税シミュレーターの結果を確認", color:"#5B8C2A", icon:'<circle cx="7" cy="7" r="2.6"/><circle cx="17" cy="17" r="2.6"/><path d="M18.5 5 5.5 19"/>' },
-        { id:"manage",  name:"スキル管理",       note:"GitHubのスキル一式を最新に更新", color:"#546E7A", icon:'<path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/>' }
+        { id:"manage",  name:"スキル管理",       note:"GitHubのスキル一式を最新に更新", color:"#546E7A", icon:'<path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/>' },
+        { id:"create",  name:"スペース作成",     note:"再現手順書をもとにアプリ型スペースを作る", color:"#A16207", icon:'<path d="M4.5 19a9 9 0 1 1 15 0"/><path d="m12 14 4.2-4.2"/><circle cx="12" cy="14" r="1.4"/>' }
       ];
 
       var SKILLS = [
@@ -783,6 +784,18 @@
             "最初に出る<b>差分の一覧</b>を確認する",
             "更新が終わったら<b>結果の報告</b>を確認する"
           ]
+        },
+        {
+          cat:"create", no:"13", badge:"スペース作成",
+          name:"トークンメーターを作る",
+          desc:"Museの週次トークン使用率をゲージで見える化するアプリ型スペースを、再現手順書をもとに作ります（スキルではありません）",
+          start:"",
+          simpleText:"トークンメーターはスキルではなく、データを保存するアプリ型スペースです。ファイルのコピーでは渡せないため、GitHubにある再現手順書『トークンメーター.md』をもとに、自分のMuseに同じアプリを作ってもらいます。表示される数値は、作った人自身の使用状況のものになります。",
+          detailText:"画面は、燃料計のような横長ゲージ（安全・注意・危険の3ゾーン）、前回リセットから次回リセットまでの7日間を示す時間バー、タスク別の内訳（割合だけを表示し、絶対数は出しません）、4種のカラーテーマ切り替えで構成されます。公式の使用率はMuseのサブスクリプション情報から読み取るのが正本で、1時間ごとの自動更新も設定されます。実行すると、ZIPをダウンロードして展開し、手順書のとおりに作成が始まります。",
+          detail:[],
+          needs:[
+            "特になし（指示文を送ると、ZIPのダウンロードと展開から作成が始まります）"
+          ]
         }
       ];
 
@@ -799,7 +812,8 @@
         "muse_receipt_pdf_to_sheets": "「領収書整理_実行前」フォルダに領収書を入れたので、以下のスキルを実行して\nmuse_receipt_pdf_to_sheets",
         "muse_medical_expenses_to_sheets": "「医療費整理_実行前」フォルダに領収書を入れたので、以下のスキルを実行して\nmuse_medical_expenses_to_sheets\n\n通院交通費のメモがあれば、以下に書いてください\n[例：11月12日、○○病院、電車で○○駅→○○駅、往復○○円]",
         "muse_check_resident_tax_simulation": "[ここにシミュレーターの結果を貼り付け]\n上記文章から以下のスキルを実行して\nmuse_check_resident_tax_simulation",
-        "muse_skills_space_update": "以下のスキルを実行して\nmuse_skills_space_update"
+        "muse_skills_space_update": "以下のスキルを実行して\nmuse_skills_space_update",
+        "トークンメーターを作る": "トークンメーターを作ってください。再現手順書は GitHub の skills_muse.ai リポジトリにある「トークンメーター.md」です。ZIP（https://github.com/sinzy0925/skills_muse.ai/archive/refs/heads/main.zip）をダウンロードして展開し、その中のトークンメーター.md の手順どおりに作ってください。"
       };
 
       // 編集ボックスの初期文（テキスト版スライド専用）
@@ -818,7 +832,8 @@
         "muse_receipt_pdf_to_sheets": true,
         "muse_medical_expenses_to_sheets": true,
         "muse_check_resident_tax_simulation": true,
-        "muse_skills_space_update": true
+        "muse_skills_space_update": true,
+        "トークンメーターを作る": true
       };
       function composerTextFor(name){
         if(name === "muse_make_slides_with_narration_from_texts_to_youtube"){ return COMPOSER_DEFAULT; }
@@ -873,7 +888,7 @@
           var composerRows = composerText ? Math.min(Math.max(composerText.split("\n").length, 5), 14) : 5;
           var composerNote = 'メモ帳に移さなくて大丈夫です。下の箱は<b>そのまま編集できます</b>。<b>[ ]</b> の部分を書き換えて（長文のときは [ ] を消して貼り付けてもOKです）、「編集した文をコピーして、チャットを開く」を押すと、<b>1タップでコピーとチャットを開くところまで</b>進みます。あとは開いたチャットに<b>貼り付けて送るだけ</b>です。';
           html += '<article class="card" data-search="' + esc((s.name + " " + s.desc + " " + cat.name).toLowerCase()) + '">'
-            + '<span class="no">SKILL ' + s.no + '</span>'
+            + '<span class="no">' + (s.badge ? esc(s.badge) : 'SKILL ' + s.no) + '</span>'
             + '<div class="skill-name">' + prettyName(s.name) + '</div>'
             + '<p class="desc">' + esc(s.desc) + '</p>'
             + '<div class="actions">'
@@ -886,15 +901,19 @@
             +     '<button type="button" class="how-tab" role="tab" aria-selected="false" data-howtab="detail">詳細説明</button>'
             +   '</div>'
             +   '<div class="how-pane how-pane-simple active">'
-            +     '<p class="simple-p">' + esc(s.desc) + '</p>'
-            +     '<p class="simple-p"><b>始め方：</b>' + s.start + '</p>'
+            +     (s.simpleText
+                    ? '<p class="simple-p">' + esc(s.simpleText) + '</p>'
+                    : '<p class="simple-p">' + esc(s.desc) + '</p>'
+                      + '<p class="simple-p"><b>始め方：</b>' + s.start + '</p>')
             +   '</div>'
             +   '<div class="how-pane how-pane-detail">'
-            +     s.detail.map(function(sec){
-                  return '<div class="detail-sec"><h4>' + esc(sec.h) + '</h4><ul>'
-                    + sec.items.map(function(it){ return "<li>" + it + "</li>"; }).join("")
-                    + '</ul></div>';
-                }).join("")
+            +     (s.detailText
+                    ? '<p class="simple-p">' + esc(s.detailText) + '</p>'
+                    : s.detail.map(function(sec){
+                        return '<div class="detail-sec"><h4>' + esc(sec.h) + '</h4><ul>'
+                          + sec.items.map(function(it){ return "<li>" + it + "</li>"; }).join("")
+                          + '</ul></div>';
+                      }).join(""))
             +   '</div>'
             + '</div>'
             + (s.runGuide && !isComposer
