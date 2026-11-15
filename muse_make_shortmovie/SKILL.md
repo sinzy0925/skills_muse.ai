@@ -12,6 +12,8 @@ Two rules define this skill and are never skipped:
 1. **Maximum length, always.** The movie is 6 scenes, about 60 seconds. Do not make a shorter version unless the user explicitly asks for one.
 2. **Confirm the content first.** The scene plan and every narration script are shown to the user in full, and nothing is generated until the user says OK.
 
+Longer stories are made as **multi-part productions**: the story is split into parts of 6 scenes (about 60 seconds) each, every part is produced with the same flow in its own request, and the finished parts are concatenated at the end (two parts ≈ 120 seconds, and so on). When a character appears, one reference image (a character sheet) and one fixed character description are decided before part 1 and reused for every scene of every part, so the same character carries through the whole story — see "Multi-part productions" below.
+
 ## Usage sheet (show it when asked)
 
 - This skill ships with `使い方シート.md`, a plain-language explanation of how to use it, written for the operator and for anyone they hand the skill to.
@@ -26,6 +28,7 @@ Two rules define this skill and are never skipped:
 - **One voice for the whole movie.** All scenes use the same narration voice. If any scene's narration does not fit its 10 seconds with the first voice, switch voices and re-synthesize **all** scenes with the new voice; never mix voices scene by scene.
 - **Measure, don't estimate.** Every narration file's duration is measured before assembly. A scene is ready only when its narration is 10 seconds or shorter.
 - **Generation limits.** At most 6 video clips per user request — that is why the movie is 6 scenes. If a clip fails, only the failed clip may be regenerated; successful clips are kept.
+- **Fixed references for continuing characters.** When a production has a character, the character sheet (reference image), the fixed character description and the narration voice are decided once, confirmed at the first gate, stored with the production's files, and reused unchanged in every part. Never redesign the character midway.
 - **No fixed URLs or IDs.** Themes, titles and end-card text come from the user at run time and are never baked into this skill.
 
 ## Step 1: Collect the inputs
@@ -51,6 +54,7 @@ If the theme is missing, stop and ask. Do not guess a theme.
 ## Step 4: Generate the 6 clips
 
 - Generate one clip per scene (6 in total), vertical 9:16, each with its scene-specific request plus a shared context block (the movie's theme, the scene's role, the shared style, and any on-screen text for that scene — text to appear on screen is written in Japanese).
+- If the production has a character sheet, pass the reference image as an image input to every clip generation, and include the fixed character description verbatim in every scene's context block.
 - Keep the successful clips; regenerate only a failed one.
 
 ## Step 5: Synthesize and measure the narration
@@ -69,6 +73,14 @@ If the theme is missing, stop and ask. Do not guess a theme.
 - Verify before delivering: total duration is about 60 seconds, and audio is actually present in every scene (check the sound level of a few seconds inside each scene — a silent scene means a failed mix, fix it before delivering).
 - Deliver the movie attached in the chat, with a one-line summary of the scene flow. Mention honestly anything that came out imperfect (for example, decorative on-screen text in generated clips can be garbled in places).
 - If the user wants changes afterwards: picture changes mean regenerating that scene's clip; wording changes mean re-synthesizing that scene's narration (same voice as the rest) and re-assembling. The other scenes stay untouched.
+
+## Multi-part productions (longer stories)
+
+- Split the story into parts of 6 scenes each (part 1, part 2, …). Each part runs the normal flow (Steps 1–7) in its own request, because one request can generate at most 6 clips. Keep each part's finished file; the parts are the building blocks of the full movie.
+- **Before part 1 — fix the character.** Generate one character sheet: a single reference image showing the character full-body, front view, with the design features clearly visible. Write the fixed character description (hair, outfit, colors, distinguishing features) as one exact text. Show both at part 1's pre-confirmation gate; once approved, store them with the production's files and never change them for the rest of the story.
+- **Every scene, every part:** pass the character sheet as an image input to the clip generation and include the fixed character description word for word in the scene's context. Use the same narration voice across all parts.
+- **Assembly:** when all parts are done, concatenate the part files in story order into one full movie. Verify the total duration (parts × about 60 seconds) and that every part has its narration, then deliver the combined movie (the individual parts stay available too).
+- **Honest limit:** generated video cannot promise a pixel-identical character. The reference image plus the fixed description make the character recognizably the same across parts; fine details (facial details, small accessories) may still drift slightly. Say this at the gate when a character is involved, not after delivery.
 
 ## Cautions
 
