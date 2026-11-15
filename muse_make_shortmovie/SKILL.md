@@ -50,6 +50,12 @@ If the theme is missing, stop and ask. Do not guess a theme.
 
 - Show the user the full plan: all 6 scenes with their picture ideas and narration scripts, the total length (about 60 seconds), and the end-card text.
 - Generate **nothing** until the user says OK. Apply requested edits and re-show the changed parts.
+- **Destination check (only when the total exceeds 60 seconds).** If the planned total length is over 60 seconds (any multi-part production), also ask where the finished movie will be posted, and check the plan against that destination's video-length limit before anything is generated:
+  - YouTube Shorts: up to 3 minutes
+  - Instagram Reels: up to 3 minutes
+  - Instagram Stories: 60 seconds per video — anything longer cannot be posted as one Story
+  - X (Twitter): 140 seconds on free accounts; longer videos need a paid plan
+  If the plan exceeds the chosen destination's limit, say so at the gate and propose adjusting the number of parts (or splitting the post). If the user has not decided the destination yet, asking is enough — do not block production on it. A single about-60-second movie fits all of the above, so this check is skipped for one-part productions.
 
 ## Step 4: Generate the 6 clips
 
@@ -80,6 +86,7 @@ If the theme is missing, stop and ask. Do not guess a theme.
 - **Before part 1 — fix the character.** Generate one character sheet: a single reference image showing the character full-body, front view, with the design features clearly visible. Write the fixed character description (hair, outfit, colors, distinguishing features) as one exact text. Show both at part 1's pre-confirmation gate; once approved, store them with the production's files and never change them for the rest of the story.
 - **Every scene, every part:** pass the character sheet as an image input to the clip generation and include the fixed character description word for word in the scene's context. Use the same narration voice across all parts.
 - **Assembly:** when all parts are done, concatenate the part files in story order into one full movie. Verify the total duration (parts × about 60 seconds) and that every part has its narration, then deliver the combined movie (the individual parts stay available too).
+- The destination check in Step 3 applies to the whole story's total length; run it once, at part 1's gate.
 - **Honest limit:** generated video cannot promise a pixel-identical character. The reference image plus the fixed description make the character recognizably the same across parts; fine details (facial details, small accessories) may still drift slightly. Say this at the gate when a character is involved, not after delivery.
 
 ## Cautions
