@@ -1,0 +1,5 @@
+name: "muse_make_shortmovie"
+title: "Short Movie Maker"
+description: "Make a vertical short movie at the maximum length one request can produce (6 generated clips of about 10 seconds each, about 60 seconds total) about a theme the user gives. The scene plan and all narration scripts are confirmed with the user before anything is generated; the clips' own audio is never used — a single-voice narration is synthesized per scene, measured to fit its 10 seconds, laid over the picture, and the scenes are joined into one movie."
+category: "Media and video"
+include_in_prompt: false

@@ -75,6 +75,12 @@ https://github.com/sinzy0925/skills_muse.ai/archive/refs/heads/main.zip
 | `muse_up_youtube_from_google_drive_mp4` | Googleドライブに置いたmp4を、設定を確認してからYouTubeへアップロードする |
 | `muse_up_youtube_from_google_slides` | Googleスライドを、Google Vidsでナレーション付き動画にして、設定を確認してからYouTubeへアップロードする |
 
+### 動画作成
+
+| スキル | 内容 |
+|---|---|
+| `muse_make_shortmovie` | テーマを渡すと、内容を事前に確認してから、ナレーション付きの約60秒ショート動画を作る（6シーン×約10秒で最大の長さ。生成クリップの音は使わず、読み上げに差し替える） |
+
 ### SNS投稿
 
 | スキル | 内容 |
