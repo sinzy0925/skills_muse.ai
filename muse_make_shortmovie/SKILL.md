@@ -55,6 +55,7 @@ If the theme is missing, stop and ask. Do not guess a theme.
   - Instagram Reels: up to 3 minutes
   - Instagram Stories: 60 seconds per video — anything longer cannot be posted as one Story
   - X (Twitter): 140 seconds on free accounts; longer videos need a paid plan
+  - TikTok: up to 60 minutes for uploaded files
   If the plan exceeds the chosen destination's limit, say so at the gate and propose adjusting the number of parts (or splitting the post). If the user has not decided the destination yet, asking is enough — do not block production on it. A single about-60-second movie fits all of the above, so this check is skipped for one-part productions.
 
 ## Step 4: Generate the 6 clips
