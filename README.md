@@ -86,6 +86,7 @@ https://github.com/sinzy0925/skills_muse.ai/archive/refs/heads/main.zip
 | スキル | 内容 |
 |---|---|
 | `muse_sns_daily_posting` | 素材ストックからInstagram（リール／カルーセル）とThreadsの投稿を1日分準備し、最終確認と本人のOKの後だけ公開する |
+| `muse_up_to_x` | Xへの投稿を、PCのChrome（Muse from Meta）から、文章の事前確認と添付ファイルの確認をしてから行う（内蔵ブラウザではXにログインできないため使わない） |
 
 ### ログイン
 

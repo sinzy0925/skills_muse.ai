@@ -1,0 +1,5 @@
+name: "muse_up_to_x"
+title: "Post to X via Muse from Meta"
+description: "Post to X from the account logged in on the user's PC Chrome through the Muse from Meta extension (the built-in browser cannot log in to X), with the text confirmed by the user first, an explicit check on whether an attachment is needed, free-account limit checks, and verification of every post and reply."
+category: "Work and knowledge"
+include_in_prompt: false
