@@ -1,0 +1,5 @@
+name: "muse_fortune_kyusei_shichusuimei_daily"
+title: "Kyusei × Four Pillars Daily Reading"
+description: "A daily fortune-telling skill that combines two calculation-based methods: the Four Pillars day pillar set against the person's day master for the day-level flow, and Kyusei Kigaku's year and month board stars set against their honmeisei for the background flow, all computed by a verified helper (nothing is drawn by lot) and woven into one short, gentle daily reading."
+category: "Work and knowledge"
+include_in_prompt: false
