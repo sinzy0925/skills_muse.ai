@@ -1,0 +1,5 @@
+name: "muse_fortune_periodic_setup"
+title: "Fortune Periodic Setup"
+description: "A setup-only skill that schedules, changes, and stops recurring runs of the five combined fortune-telling skills: it proposes the weekday rotation, daily time, and image option (with a token-consumption warning), collects the birth information, registers one daily recurring job only after the person's OK, adopts any existing fortune periodic job instead of duplicating it, and refreshes the task meter. It performs no readings itself."
+category: "Work and knowledge"
+include_in_prompt: false
