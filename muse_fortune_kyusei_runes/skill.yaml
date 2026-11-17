@@ -1,0 +1,5 @@
+name: "muse_fortune_kyusei_runes"
+title: "Kyusei Kigaku × Runes Reading"
+description: "An integrated fortune-telling skill: build the Kyusei Kigaku chart (honmeisei and getsumeisei stars) from a birth date alone with a verified calculation helper, read the foundation — inborn tendencies and the year's flow — then draw three Elder Futhark runes by random lot for the present question and weave both into one gentle, encouraging reading."
+category: "Work and knowledge"
+include_in_prompt: false
