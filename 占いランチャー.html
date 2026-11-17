@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>占いランチャー</title>
+    <style>
+      :root {
+        --bg: #fdf6ec;
+        --ink: #4a3f35;
+        --ink-soft: #7a6a5c;
+        --card-border: rgba(120, 95, 70, 0.18);
+        --field-bg: rgba(255, 255, 255, 0.75);
+        --field-border: rgba(120, 95, 70, 0.25);
+        --btn-bg: #b06a2c;
+        --btn-bg-hover: #9d5c24;
+        --btn-ink: #fff8ef;
+        --btn-bg-done: #4e7d5a;
+        --reset-bg: #e8e2d9;
+        --reset-ink: #5c5044;
+        --reset-border: rgba(120, 95, 70, 0.22);
+        --step-bg: #fffaf1;
+        --ask-bg: rgba(255, 255, 255, 0.55);
+        --toast-bg: #4a3f35;
+        --toast-ink: #fff8ef;
+        --shadow: 0 2px 10px rgba(140, 110, 80, 0.10);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #2b241e;
+          --ink: #f0e6da;
+          --ink-soft: #c4b3a2;
+          --card-border: rgba(240, 230, 218, 0.16);
+          --field-bg: rgba(0, 0, 0, 0.28);
+          --field-border: rgba(240, 230, 218, 0.25);
+          --btn-bg: #c07f3a;
+          --btn-bg-hover: #cd8c46;
+          --btn-ink: #fff8ef;
+          --btn-bg-done: #7fae8d;
+          --reset-bg: rgba(255, 255, 255, 0.10);
+          --reset-ink: #e6d9c8;
+          --reset-border: rgba(240, 230, 218, 0.25);
+          --step-bg: #382f27;
+          --ask-bg: rgba(0, 0, 0, 0.22);
+          --toast-bg: #f0e6da;
+          --toast-ink: #3a2f26;
+          --shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+        }
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Hiragino Maru Gothic ProN", "Hiragino Sans", "Yu Gothic UI", "Yu Gothic", "Noto Sans JP", sans-serif;
+        line-height: 1.6;
+        -webkit-text-size-adjust: 100%;
+      }
+      main {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 20px 16px 32px;
+      }
+      /* ---- 3ステップ案内 ---- */
+      .steps {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin: 4px 0 20px;
+      }
+      @media (min-width: 640px) {
+        .steps { grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+      }
+      .step {
+        background: var(--step-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 14px;
+        padding: 12px 14px;
+        box-shadow: var(--shadow);
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+      }
+      .step-num {
+        flex: 0 0 auto;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--btn-bg);
+        color: var(--btn-ink);
+        font-size: 0.85rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 2px;
+      }
+      .step h2 {
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.45;
+      }
+      .step p {
+        margin: 2px 0 0;
+        font-size: 0.82rem;
+        color: var(--ink-soft);
+        line-height: 1.55;
+      }
+      /* ---- カード一覧 ---- */
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      @media (min-width: 640px) {
+        .grid { grid-template-columns: 1fr 1fr; }
+      }
+      .card {
+        border: 1px solid var(--card-border);
+        border-radius: 18px;
+        padding: 18px 16px 16px;
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .card h2 {
+        margin: 0;
+        font-size: 1.15rem;
+        line-height: 1.4;
+        letter-spacing: 0.01em;
+      }
+      .skill-name {
+        margin: -4px 0 0;
+        font-size: 0.72rem;
+        color: var(--ink-soft);
+        font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+        word-break: break-all;
+        line-height: 1.5;
+      }
+      .card .desc {
+        margin: 2px 0 0;
+        font-size: 0.88rem;
+        color: var(--ink-soft);
+      }
+      .ask {
+        margin: 4px 0 0;
+        font-size: 0.82rem;
+        background: var(--ask-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 10px;
+        padding: 8px 10px;
+        line-height: 1.55;
+      }
+      .ask strong { font-weight: 700; }
+      .card label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--ink-soft);
+        margin-top: 4px;
+      }
+      .card textarea {
+        width: 100%;
+        min-height: 96px;
+        resize: vertical;
+        border: 1px solid var(--field-border);
+        border-radius: 10px;
+        background: var(--field-bg);
+        color: var(--ink);
+        font: inherit;
+        font-size: 0.88rem;
+        line-height: 1.55;
+        padding: 10px 12px;
+      }
+      .card textarea:focus {
+        outline: 2px solid rgba(176, 106, 44, 0.45);
+        outline-offset: 1px;
+      }
+      .btn-row {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 2px;
+      }
+      .copy-btn {
+        min-height: 44px;
+        border: none;
+        border-radius: 999px;
+        background: var(--btn-bg);
+        color: var(--btn-ink);
+        font: inherit;
+        font-size: 0.92rem;
+        font-weight: 700;
+        padding: 10px 16px;
+        cursor: pointer;
+      }
+      .copy-btn:hover { background: var(--btn-bg-hover); }
+      .copy-btn:active { transform: scale(0.98); }
+      .copy-btn.done { background: var(--btn-bg-done); }
+      .reset-btn {
+        min-height: 40px;
+        border: 1px solid var(--reset-border);
+        border-radius: 999px;
+        background: var(--reset-bg);
+        color: var(--reset-ink);
+        font: inherit;
+        font-size: 0.85rem;
+        font-weight: 600;
+        padding: 8px 16px;
+        cursor: pointer;
+      }
+      .reset-btn:active { transform: scale(0.98); }
+      /* pastel tints */
+      .t-rose  { background: #fdeef0; }
+      .t-peach { background: #fdf0e2; }
+      .t-mint  { background: #e9f6ec; }
+      .t-sky   { background: #e8f2fb; }
+      .t-lilac { background: #f1ecfa; }
+      .t-butter{ background: #fdf6da; }
+      .t-aqua  { background: #e6f6f4; }
+      @media (prefers-color-scheme: dark) {
+        .t-rose  { background: #453136; }
+        .t-peach { background: #46382a; }
+        .t-mint  { background: #2f4234; }
+        .t-sky   { background: #2e3c4c; }
+        .t-lilac { background: #3b3450; }
+        .t-butter{ background: #47402a; }
+        .t-aqua  { background: #2b423f; }
+      }
+      .footer-note {
+        margin: 24px 4px 8px;
+        font-size: 0.88rem;
+        color: var(--ink-soft);
+        text-align: center;
+        line-height: 1.7;
+      }
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 24px;
+        transform: translateX(-50%) translateY(16px);
+        background: var(--toast-bg);
+        color: var(--toast-ink);
+        font-size: 0.9rem;
+        padding: 12px 20px;
+        border-radius: 999px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease, transform 0.25s ease;
+        max-width: calc(100vw - 32px);
+        text-align: center;
+        z-index: 10;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .toast { transition: none; }
+        .copy-btn:active, .reset-btn:active { transform: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="steps" aria-label="使い方">
+        <div class="step">
+          <span class="step-num" aria-hidden="true">1</span>
+          <div>
+            <h2>占いを選ぶ</h2>
+            <p>気になる占いのカードを探します</p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num" aria-hidden="true">2</span>
+          <div>
+            <h2>実行文を整える</h2>
+            <p>必要なら文面を少し書き換えます</p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-num" aria-hidden="true">3</span>
+          <div>
+            <h2>コピーをしてチャットを開く</h2>
+            <p>そのままチャットに送ると占いが始まります</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid">
+
+        <section class="card t-rose">
+          <h2>四柱推命 × タロット</h2>
+          <p class="skill-name">muse_fortune_shichusuimei_tarot</p>
+          <p class="desc">生年月日から出す命式（四柱推命）が土台、今の相談にはタロット3枚。長期の流れと目先の答えを分けて読む、看板の合体占いです。</p>
+          <p class="ask"><strong>チャットで聞かれること：</strong>生年月日／相談したいテーマ</p>
+          <label for="cmd-1">実行文</label>
+          <textarea id="cmd-1">スキル muse_fortune_shichusuimei_tarot を使って、四柱推命×タロットの合体占いをお願いします。生年月日と相談テーマは、チャットで聞いてください。</textarea>
+          <div class="btn-row">
+            <button class="copy-btn" type="button" data-target="cmd-1">編集した文をコピーして、チャットを開く</button>
+            <button class="reset-btn" type="button" data-target="cmd-1">文を元に戻す</button>
+          </div>
+        </section>
+
+        <section class="card t-mint">
+          <h2>九星気学 × ルーン</h2>
+          <p class="skill-name">muse_fortune_kyusei_runes</p>
+          <p class="desc">生年月日だけで本命星・月命星・今年の流れを出す九星気学が土台、今の相談にはルーンを3つ引いて読む合体占いです。出生時刻は不要です。</p>
+          <p class="ask"><strong>チャットで聞かれること：</strong>生年月日／相談したいテーマ</p>
+          <label for="cmd-2">実行文</label>
+          <textarea id="cmd-2">スキル muse_fortune_kyusei_runes を使って、九星気学×ルーンの合体占いをお願いします。生年月日と相談テーマは、チャットで聞いてください。</textarea>
+          <div class="btn-row">
+            <button class="copy-btn" type="button" data-target="cmd-2">編集した文をコピーして、チャットを開く</button>
+            <button class="reset-btn" type="button" data-target="cmd-2">文を元に戻す</button>
+          </div>
+        </section>
+
+        <section class="card t-sky">
+          <h2>数秘術 × タロット</h2>
+          <p class="skill-name">muse_fortune_numerology_tarot</p>
+          <p class="desc">生年月日だけでライフパス・バースデー・今年のパーソナルイヤーを出す数秘術が土台、今の相談にはタロット3枚で読む合体占いです。名前も出生時刻も不要です。</p>
+          <p class="ask"><strong>チャットで聞かれること：</strong>生年月日／相談したいテーマ</p>
+          <label for="cmd-3">実行文</label>
+          <textarea id="cmd-3">スキル muse_fortune_numerology_tarot を使って、数秘術×タロットの合体占いをお願いします。生年月日と相談テーマは、チャットで聞いてください。</textarea>
+          <div class="btn-row">
+            <button class="copy-btn" type="button" data-target="cmd-3">編集した文をコピーして、チャットを開く</button>
+            <button class="reset-btn" type="button" data-target="cmd-3">文を元に戻す</button>
+          </div>
+        </section>
+
+        <section class="card t-lilac">
+          <h2>西洋占星術 × オラクル</h2>
+          <p class="skill-name">muse_fortune_astrology_oracle</p>
+          <p class="desc">太陽・月・上昇宮と現在の木星・土星から流れを見る西洋占星術が土台、今の相談にはオリジナルのオラクルカード36枚から3枚引いて読む合体占いです。出生時刻がなければ、太陽星座のみの簡易鑑定になります。</p>
+          <p class="ask"><strong>チャットで聞かれること：</strong>生年月日／相談したいテーマ</p>
+          <label for="cmd-4">実行文</label>
+          <textarea id="cmd-4">スキル muse_fortune_astrology_oracle を使って、西洋占星術×オラクルの合体占いをお願いします。生年月日と相談テーマは、チャットで聞いてください。</textarea>
+          <div class="btn-row">
+            <button class="copy-btn" type="button" data-target="cmd-4">編集した文をコピーして、チャットを開く</button>
+            <button class="reset-btn" type="button" data-target="cmd-4">文を元に戻す</button>
+          </div>
+        </section>
+
+        <section class="card t-butter">
+          <h2>九星 × 四柱デイリー</h2>
+          <p class="skill-name">muse_fortune_kyusei_shichusuimei_daily</p>
+          <p class="desc">デイリー（今日の運勢）専用。四柱推命の日柱と日主の関係で日の流れを、九星の年盤・月盤と本命星で年・月の流れを見ます。両方とも計算で出すので、同じ日なら結果は変わりません。</p>
+          <p class="ask"><strong>チャットで聞かれること：</strong>生年月日</p>
+          <label for="cmd-5">実行文</label>
+          <textarea id="cmd-5">スキル muse_fortune_kyusei_shichusuimei_daily を使って、九星気学×四柱推命のデイリー占いをお願いします。生年月日は、チャットで聞いてください。</textarea>
+          <div class="btn-row">
+            <button class="copy-btn" type="button" data-target="cmd-5">編集した文をコピーして、チャットを開く</button>
+            <button class="reset-btn" type="button" data-target="cmd-5">文を元に戻す</button>
+          </div>
+        </section>
+
+        <section class="card t-peach">
+          <h2>全部まとめて</h2>
+          <p class="skill-name">muse_fortune_shichusuimei_tarot／muse_fortune_kyusei_runes／muse_fortune_numerology_tarot／muse_fortune_astrology_oracle／muse_fortune_kyusei_shichusuimei_daily</p>
+          <p class="desc">合体占い5本を、同じ相談テーマでまとめて鑑定します。時間はかかりますが、占いごとの見え方の違いまで楽しめます。</p>
+          <p class="ask"><strong>チャットで聞かれること：</strong>生年月日／相談したいテーマ</p>
+          <label for="cmd-6">実行文</label>
+          <textarea id="cmd-6">合体占いを全部まとめてお願いします。対象は、四柱推命×タロット（muse_fortune_shichusuimei_tarot）、九星気学×ルーン（muse_fortune_kyusei_runes）、数秘術×タロット（muse_fortune_numerology_tarot）、西洋占星術×オラクル（muse_fortune_astrology_oracle）、九星×四柱デイリー（muse_fortune_kyusei_shichusuimei_daily）です。生年月日と相談テーマは、チャットで聞いてください。</textarea>
+          <div class="btn-row">
+            <button class="copy-btn" type="button" data-target="cmd-6">編集した文をコピーして、チャットを開く</button>
+            <button class="reset-btn" type="button" data-target="cmd-6">文を元に戻す</button>
+          </div>
+        </section>
+
+        <section class="card t-aqua">
+          <h2>占いの定期実行を設定</h2>
+          <p class="skill-name">muse_fortune_periodic_setup</p>
+          <p class="desc">合体占いを定期実行にし、決まった時刻にチャットへ届けるための設定スキルを呼び出します。曜日ローテーション・時刻・イメージ化の要否をまとめて提案してもらい、OKしてから登録します。</p>
+          <p class="ask"><strong>チャットで聞かれること：</strong>曜日ローテーション・時刻・イメージ化の要否など</p>
+          <label for="cmd-7">実行文</label>
+          <textarea id="cmd-7">スキル muse_fortune_periodic_setup を使って、合体占いの定期実行を設定したいです。提案をまとめて見せてください。</textarea>
+          <div class="btn-row">
+            <button class="copy-btn" type="button" data-target="cmd-7">編集した文をコピーして、チャットを開く</button>
+            <button class="reset-btn" type="button" data-target="cmd-7">文を元に戻す</button>
+          </div>
+        </section>
+
+      </div>
+
+      <p class="footer-note">占いは、気持ちを整えたり次の一歩を考えたりするヒントとしてお楽しみください。</p>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite">コピーしました。チャットに貼って送信してください。</div>
+
+    <script>
+      (function () {
+        var toast = document.getElementById('toast');
+        var timer = null;
+        function showToast(msg) {
+          toast.textContent = msg;
+          toast.classList.add('show');
+          if (timer) clearTimeout(timer);
+          timer = setTimeout(function () { toast.classList.remove('show'); }, 2600);
+        }
+        function fallbackCopy(text) {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          var ok = false;
+          try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+          document.body.removeChild(ta);
+          return ok;
+        }
+        // 初期文を覚えておく（「文を元に戻す」用）
+        var defaults = {};
+        document.querySelectorAll('textarea[id^="cmd-"]').forEach(function (ta) {
+          defaults[ta.id] = ta.value;
+        });
+        document.querySelectorAll('.copy-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var field = document.getElementById(btn.getAttribute('data-target'));
+            var text = field.value;
+            var done = function () {
+              showToast('コピーしました。チャットに貼って送信してください。');
+              var original = '編集した文をコピーして、チャットを開く';
+              btn.textContent = 'コピーしました ✓';
+              btn.classList.add('done');
+              setTimeout(function () {
+                btn.textContent = original;
+                btn.classList.remove('done');
+              }, 2600);
+            };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text).then(done, function () {
+                if (fallbackCopy(text)) done();
+              });
+            } else if (fallbackCopy(text)) {
+              done();
+            }
+          });
+        });
+        document.querySelectorAll('.reset-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var id = btn.getAttribute('data-target');
+            var field = document.getElementById(id);
+            if (field && defaults[id] !== undefined) {
+              field.value = defaults[id];
+              showToast('文を元に戻しました。');
+              field.focus();
+            }
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>
