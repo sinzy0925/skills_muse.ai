@@ -1,0 +1,5 @@
+name: "muse_fortune_numerology_tarot"
+title: "Numerology × Tarot Reading"
+description: "An integrated fortune-telling skill: compute the numerology numbers (life path, birthday, personal year) from a birth date alone with a verified calculation helper, read the foundation — life theme, inborn talent and the year's flow — then draw three tarot cards by random lot for the present question and weave both into one gentle, encouraging reading."
+category: "Work and knowledge"
+include_in_prompt: false
