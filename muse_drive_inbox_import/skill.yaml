@@ -1,0 +1,5 @@
+name: "muse_drive_inbox_import"
+title: "Google Drive Inbox → Muse Storage Importer"
+description: "Import files (mainly large videos) from a dedicated Google Drive inbox folder named 「Muse受け取り」 into Muse's own storage: the user drops a file into the folder and says 「取り込んで」; Muse fetches it into the storage folder, verifies size and duration, indexes it in a memo, and reports completion. Muse never deletes the Drive copies — the user removes them by hand after the report, so Drive works as a pipe and Muse as the tank. Stored files can be shown again in chat with a short '見せて' request."
+category: "Work and knowledge"
+include_in_prompt: false

@@ -2,7 +2,7 @@
 
 ## What this skill does
 
-Build the weekly announcement post for the AIアウトプット雑談会 (held every Saturday at 8:00), date it to the Saturday of the week it is created, and — after the user approves the text — post it to the Discord thread 『AIアウトプット雑談会』 in SHIFT AI オンラインコミュニティ. The announcement's wording is written fresh each time, using the example text in [references/example-announcement.md](references/example-announcement.md) as the reference for structure, tone and content. The only fixed text is the Zoom participation block (see below), which is reproduced exactly and never changed.
+Build the weekly announcement post for the AIアウトプット雑談会 (held every Saturday at 8:00), date it to the Saturday of the week it is created, and — after the user approves the text — post the same announcement text to two places in SHIFT AI オンラインコミュニティ: the Discord thread 『AIアウトプット雑談会』 and 『宣伝フリースペース』 (added by the user on 2026-11-19; from then on, always both places). The announcement's wording is written fresh each time, using the example text in [references/example-announcement.md](references/example-announcement.md) as the reference for structure, tone and content. The only fixed text is the Zoom participation block (see below), which is reproduced exactly and never changed.
 
 Typical instruction from the user:
 
@@ -17,10 +17,13 @@ Typical instruction from the user:
 
 ## Posting target
 
+Post the same announcement text to both places:
+
 - Server: SHIFT AI オンラインコミュニティ
 - Forum channel: 🧑‍💻サークル
 - Thread: 『AIアウトプット雑談会』
 - Thread URL: not written in this skill. Look it up in Muse's own memory (kept locally, outside this skill) or ask the user.
+- Second destination: 『宣伝フリースペース』 in the same server (added 2026-11-19 at the user's instruction; its URL is likewise not written in this skill — find it in Discord at posting time, or look it up in Muse's own memory).
 - Posting is done via Muse's built-in browser, with the user already signed in to Discord as themselves (display name タロ.AI). The login is done by the human in advance; never ask for the password or any code in chat. No webhook or bot: the user is not a server admin, so posting as themselves in the browser is the route.
 
 ## Fixed content — never change [絶対に変更禁止]
@@ -69,5 +72,5 @@ Keep the whole text friendly, in the example's spirit (light emoji use is fine),
 
 ## Step 4: Verify and report
 
-- After posting, confirm the announcement is visible at the end of the 『AIアウトプット雑談会』 thread.
-- Report: the destination, the date used, and the posting time.
+- After posting, confirm the announcement is visible at the end of the 『AIアウトプット雑談会』 thread and in 『宣伝フリースペース』.
+- Report: the destinations (both), the date used, and the posting time.

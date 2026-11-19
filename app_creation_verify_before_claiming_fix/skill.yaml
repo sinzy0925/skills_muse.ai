@@ -1,0 +1,29 @@
+name: app_creation_verify_before_claiming_fix
+title: Verify an artifact fix on the real device
+description: Add a real device verification rule to app creation so a Muse artifact or Space fix is never reported as fixed before its edited content is checked and the user confirms it on their own device.
+category: Creation
+include_in_prompt: false
+amends:
+  skill: app_creation
+  reviewed_revision: 339807ee949d31e9dca407f023bf1e3f11547f843a22ebd9c4f3c6c44a03fc48
+skill_improvement:
+  managed: true
+  status: active
+  evidence_handles:
+  - assistant-msg-ba69519f-fc59-3939-c923-3a1431e42220
+  - message:0b9d812f-11a7-407e-840c-1c2cdb749583
+  - message:acdcab2c-74c9-4221-bd9f-865376aab929
+  - assistant-msg-a2f76a5b-447f-698f-8ba9-137a1fb5df6f
+  - message:d4c1fa2c-7970-444a-a586-d804cef81723
+  - assistant-msg-84a4877a-2fa1-0172-7adc-c827add32f27
+  - message:b8618559-0837-4700-a323-1638ef241c37
+  - assistant-msg-505b88bd
+  measurement:
+    proxy_metric_id: objective_success_rate
+    success_criterion: Within 14 days a later artifact or Space fix is reported as changed and awaiting a real device test when the audit environment cannot reproduce it, or as verified from the edited content and the user confirmation, with no claim of fixed before that confirmation. If no such fix occurs in the window the result is inconclusive rather than a failure.
+    window_days: 14
+  needs_review: false
+  rationale: 'The same failure repeated on 2026-11-17. The fortune launcher was reported fixed in assistant-msg-ba69519f-fc59-3939-c923-3a1431e42220 and the user then reported in message:0b9d812f-11a7-407e-840c-1c2cdb749583 that the input still disappeared after moving pages and reloading. The space launcher was reported repaired in assistant-msg-a2f76a5b-447f-698f-8ba9-137a1fb5df6f, the user replied in message:d4c1fa2c-7970-444a-a586-d804cef81723 that it was still not working, a second repair in assistant-msg-84a4877a-2fa1-0172-7adc-c827add32f27 was followed by message:b8618559-0837-4700-a323-1638ef241c37 asking to delete and rebuild it. The handoff also records assistant-msg-505b88bd admitting a skill launcher revert had not taken effect. The base app_creation skill already says a successful build does not prove the app works, but it does not cover the specific gap here: the audit environment cannot reproduce the user in-app display, and build completion was treated as a fix. The amendment adds that narrow rule, a content check after editing, honest reporting as awaiting a real device test, and a change of angle after a repeated real device failure. The X login confusion was not proposed because muse_up_to_x already codifies PC Chrome only. The deterministic handoff suppression and recurring failure candidates were rejected because they concern system objective prompts and policy, which this loop does not change. The stale space launcher card in MEMORY.md was removed by user instruction on 2026-11-17, so no proposal is made for it.'
+  review_after: 2026-12-01T07:17:34.635926+00:00
+  reviewed_at: 2026-11-17T07:17:34.635926+00:00
+  run_id: sirun_021ce82e1748436a902b819a01aa9a96
