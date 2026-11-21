@@ -1,5 +1,5 @@
 name: "muse_install_app"
 title: "スキル一式インストーラー"
-description: "Install the whole published set in one go from the downloaded GitHub ZIP: extract the ZIP, run this skill, and it registers every custom skill in the archive as a custom skill, saves the always-referenced rules memo, and builds the Spaces (skill launcher, fortune launcher, space launcher, the three meters, and the resident-tax simulator) from the HTML files and recreation spec documents included in the archive. For first-time setup only; updating an existing install is muse_skills_space_update's job."
+description: "Install the whole published set in one go from the downloaded GitHub ZIP: extract the ZIP, run this skill, and it registers every custom skill in the archive as a custom skill, saves the always-referenced rules memo, and builds the eleven Spaces (skill launcher, fortune launcher, space launcher, slide/video launcher, meter launcher, the five meters, and the resident-tax simulator) from the HTML files and recreation spec documents included in the archive. For first-time setup only; updating an existing install is muse_skills_space_update's job."
 category: "Work and knowledge"
 include_in_prompt: false
